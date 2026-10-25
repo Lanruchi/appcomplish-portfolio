@@ -25,17 +25,14 @@ appcomplish-portfolio/
 ├── .env.example                       # Committed env template (empty values only)
 │
 ├── src/                               # Web root — only this folder is deployed
-│   ├── index.html                     # Homepage — three category sections
+│   ├── index.html                     # Landing page (the only index.html)
+│   ├── about.html                     # About / Bio
+│   ├── resume.html                    # Résumé
+│   ├── projects.html                  # All-projects listing
 │   ├── 404.html                       # Not-found page
 │   ├── robots.txt
-│   ├── about/
-│   │   └── index.html                 # About / Bio page  → /about/
-│   ├── resume/
-│   │   └── index.html                 # Résumé page       → /resume/
 │   ├── projects/
-│   │   ├── index.html                 # All-projects listing
-│   │   └── <project-slug>/
-│   │       └── index.html             # Case study for one project
+│   │   └── <project-slug>.html        # One case study per file
 │   └── assets/
 │       ├── css/
 │       │   └── style.css              # Global stylesheet
@@ -68,9 +65,9 @@ appcomplish-portfolio/
 | Reusable skill               | `.claude/skills/<name>/SKILL.md`             | Loaded on demand, not every session        |
 | Sub-agent definition         | `.claude/agents/`                            | Isolated context window                    |
 | Homepage                     | `src/index.html`                             | Web root                                   |
-| Top-level page               | `src/<page>/index.html`                      | Folder URL (about, resume); `404.html` flat|
-| Project case study           | `src/projects/<slug>/index.html`             | One folder per project                     |
-| All-projects listing         | `src/projects/index.html`                    | Entry point to case studies                |
+| Top-level page               | `src/<page>.html`                            | Descriptive name (about, resume, 404)      |
+| Project case study           | `src/projects/<slug>.html`                    | One file per project                       |
+| All-projects listing         | `src/projects.html`                            | Entry point to case studies                |
 | Global CSS                   | `src/assets/css/style.css`                   | Single stylesheet, design tokens at :root  |
 | Global JS                    | `src/assets/js/main.js`                      | Minimal; avoid frameworks                  |
 | Architecture diagram (image) | `src/assets/images/projects/<slug>/`         | PNG or SVG; referenced by case study HTML  |
@@ -84,11 +81,11 @@ appcomplish-portfolio/
 ## Rules
 
 1. **Never create a new top-level folder** without checking this table first.
-2. **One case study = one folder** under `src/projects/`. Slug = kebab-case project name.
+2. **One case study = one file** under `src/projects/`. Slug = kebab-case project name.
 3. **Images go in `src/assets/images/projects/<slug>/`** — never inline base64 or put images in the project HTML folder.
 4. **No build step** — HTML, CSS, and JS ship as-is. No bundler, no transpiler.
 5. **Only `src/` is deployed** — `docs/`, `.claude/`, `.github/` and repo files never reach production, so no exclude flags are needed.
-   Pages use folder URLs (`/about/`) and root-absolute paths (`/assets/...`).
+   Only the landing page is `index.html`; other pages get descriptive names. Use relative paths (`assets/...`, or `../assets/...` from `projects/`); only `404.html` uses root-absolute ones.
 6. **Skills vs CLAUDE.md** — if Claude should know it sometimes, it's a skill; if always, CLAUDE.md. Keep CLAUDE.md short.
 7. **Hooks** (pre/post tool events) go in `.claude/settings.json` under `"hooks"`.
 8. **Secrets** — never commit `.env`; commit `.env.example` with empty placeholders.

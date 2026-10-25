@@ -18,12 +18,11 @@ appcomplish-portfolio/
 │   ├── index.html                      # Home — hero, cert badges, featured projects
 │   ├── 404.html                        # Not-found page
 │   ├── robots.txt
-│   ├── about/index.html                # About — background and transition story
-│   ├── resume/index.html               # Resume PDF link + cert badges
+│   ├── about.html                      # About — background and transition story
+│   ├── resume.html                     # Resume PDF link + cert badges
+│   ├── projects.html                   # All projects listing
 │   ├── projects/
-│   │   ├── index.html                  # All projects listing
-│   │   └── s3-static-website/
-│   │       └── index.html              # Case study: S3 static hosting
+│   │   └── s3-static-website.html      # Case study: S3 static hosting
 │   └── assets/
 │       ├── css/style.css               # Shared stylesheet
 │       ├── js/main.js                  # Nav toggle, active link
@@ -39,23 +38,22 @@ appcomplish-portfolio/
 └── README.md
 ```
 
-Pages use folder URLs (`/about/`, `/resume/`) and root-absolute asset paths (`/assets/...`).
+Only the landing page is named `index.html`; every other page has a descriptive name. Links use relative paths (`assets/css/style.css`, `../about.html` from `projects/`), so pages also work opened straight from disk; only `404.html` uses root-absolute paths, since S3 serves it from any URL.
 
 ---
 
 ## Adding a New Project
 
-1. Create a folder: `src/projects/<project-slug>/`
-2. Copy `src/projects/s3-static-website/index.html` as your template
-3. Fill in all 6 sections:
+1. Copy `src/projects/s3-static-website.html` to `src/projects/<project-slug>.html`
+2. Fill in all 6 sections:
    - What I Built
    - Why This Approach
    - Alternatives I Considered
    - Tradeoffs
    - What Would Break at 10× the Scale
    - What I'd Do Differently
-4. Add an architecture diagram to `src/assets/images/projects/<project-slug>/`
-5. Add a card to `src/projects/index.html` and `src/index.html`
+3. Add an architecture diagram to `src/assets/images/projects/<project-slug>/`
+4. Add a card to `src/projects.html` and `src/index.html`
 
 ---
 
@@ -66,7 +64,7 @@ No CLI, Terraform, or CI/CD is wired up yet. To publish:
 1. Open the S3 bucket in the AWS console.
 2. Upload the **contents** of `src/` (keep the folder structure), overwriting existing files.
 
-Later steps, as the bootcamp progresses: `aws s3 sync src/ s3://<bucket> --delete`, then Terraform for the stack, then GitHub Actions for automatic deploys (see Planned Projects).
+Later steps, as the bootcamp progresses: `aws s3 sync src/ s3://<bucket> --delete`, then Terraform for the stack, then GitHub Actions for automatic deploys.
 
 ---
 
@@ -75,5 +73,3 @@ Later steps, as the bootcamp progresses: `aws s3 sync src/ s3://<bucket> --delet
 - [ ] S3 Static Website — Phase 2: CloudFront + ACM + WAF
 - [ ] Terraform: provision the full stack as IaC
 - [ ] CI/CD: GitHub Actions → S3 sync + CloudFront invalidation
-- [ ] Secure VPC Architecture: private subnets, bastion, NAT Gateway
-- [ ] OptiBizIQ: AI-powered POS analytics pipeline (Python + OpenAI + Square)
