@@ -135,7 +135,12 @@ a:hover { text-decoration: underline; }
 }
 
 /* ── Page wrapper ────────────────────────────────────────── */
-.page { padding: 3rem 1.5rem 6rem; }
+.page { padding: 3rem 1.5rem 4rem; }
+.page--alt {
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
 .container {
   max-width: var(--max-wide);
   margin: 0 auto;
@@ -206,25 +211,40 @@ a:hover { text-decoration: underline; }
 /* ── Section headings ────────────────────────────────────── */
 .section-header {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+.section-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.section-category-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 .section-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
-.section-header a {
+.section-header > a {
   font-size: 0.85rem;
   color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
-.section-header a:hover { color: var(--accent); }
+.section-header > a:hover { color: var(--accent); }
 
 /* ── Project cards ───────────────────────────────────────── */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.25rem;
 }
 .card {

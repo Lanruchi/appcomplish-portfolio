@@ -8,22 +8,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
 
   <nav class="nav" aria-label="Main navigation">
     <div class="nav-inner">
-      <a class="nav-logo" href="../../index.html">appcomplish<span>.</span>click</a>
+      <a class="nav-logo" href="/">appcomplish<span>.</span>click</a>
       <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle menu">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
       <ul class="nav-links" id="nav-links">
-        <li><a href="../index.html" class="active">Projects</a></li>
-        <li><a href="../../about.html">About</a></li>
-        <li><a href="../../resume.html">Resume &amp; Certs</a></li>
+        <li><a href="/" class="active">Projects</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/resume/">Resume &amp; Certs</a></li>
       </ul>
     </div>
   </nav>
@@ -31,7 +31,7 @@
   <!-- ── Article header ──────────────────────────────────── -->
   <header class="article-header">
     <div class="container--narrow">
-      <a class="back-link" href="../index.html">← All Projects</a>
+      <a class="back-link" href="/">← All Projects</a>
       <div class="tag-row">
         <span class="tag">AWS</span>
         <span class="tag">S3</span>
@@ -53,16 +53,27 @@
   <article class="article-body">
     <div class="container--narrow">
 
-      <!-- Architecture diagram -->
+      <!-- ── BEFORE architecture diagram ──────────────────── -->
       <div class="diagram-box">
-        <!-- Replace with: <img src="../../assets/images/projects/s3-static-website/architecture.png" alt="Architecture diagram" /> -->
+        <!-- Replace with: <img src="/assets/images/projects/s3-static-website/architecture-before.png" alt="Architecture before CloudFront" /> -->
         <div class="diagram-placeholder">
-          <span>🏗️</span>
-          Architecture diagram coming soon.<br>
-          Will show: Route 53 → CloudFront → S3 origin → ACM → WAF
+          <span>📦</span>
+          <strong>Before — Phase 1</strong><br>
+          Route 53 → S3 static endpoint (HTTP only, direct public access)
         </div>
       </div>
-      <p class="diagram-caption">Figure 1 — Target architecture for appcomplish.click</p>
+      <p class="diagram-caption">Figure 1 — Starting architecture: S3 bucket served publicly over HTTP via Route 53.</p>
+
+      <!-- ── AFTER architecture diagram ───────────────────── -->
+      <div class="diagram-box" style="margin-top:1rem;">
+        <!-- Replace with: <img src="/assets/images/projects/s3-static-website/architecture-after.png" alt="Architecture after CloudFront and WAF" /> -->
+        <div class="diagram-placeholder">
+          <span>🏗️</span>
+          <strong>After — Target Architecture</strong><br>
+          Route 53 → CloudFront + AWS WAF → S3 (origin access locked down via OAC, HTTPS enforced)
+        </div>
+      </div>
+      <p class="diagram-caption">Figure 2 — Target architecture: traffic routed through CloudFront with WAF at the edge and S3 locked to CloudFront-only via Origin Access Control.</p>
 
       <!-- Section 1 -->
       <h2>What I Built</h2>
@@ -149,6 +160,111 @@
         </li>
       </ul>
 
+      <!-- ── NEW: Locking Down the S3 Origin ──────────────── -->
+      <h2>Locking Down the S3 Origin</h2>
+      <div class="callout" style="--callout-color: var(--text-muted);">
+        <div class="callout-label">📝 Placeholder — fill in when Phase 2 is complete</div>
+        Once CloudFront is in front of S3, the bucket itself should no longer be publicly
+        reachable — otherwise WAF and CloudFront can be bypassed entirely by hitting the
+        S3 endpoint directly.
+      </div>
+      <p>
+        CloudFront Origin Access Control (OAC) replaces the older Origin Access Identity (OAI)
+        model. With OAC in place, the S3 bucket policy is updated to allow <code>s3:GetObject</code>
+        only from the specific CloudFront distribution principal — all direct public access
+        is removed.
+      </p>
+      <ul>
+        <li>
+          <strong>Before OAC:</strong> <!-- [FILL IN] What bucket policy or public access setting was in place --> placeholder
+        </li>
+        <li>
+          <strong>After OAC:</strong> <!-- [FILL IN] Confirmed direct S3 URL returns 403, CloudFront URL loads normally --> placeholder
+        </li>
+      </ul>
+
+      <!-- ── NEW: What I Hit (Troubleshooting) ────────────── -->
+      <h2>What I Hit Along the Way</h2>
+      <div class="callout">
+        <div class="callout-label">📝 Placeholder — fill in as you work through Phase 2</div>
+        The most credible part of any case study. Document the actual errors and how you
+        traced them — not just what the final configuration looks like.
+      </div>
+      <p>
+        Suggested items to capture as you encounter them:
+      </p>
+      <ul>
+        <li>
+          <strong>ACM certificate validation delay or mismatch</strong> — Did DNS validation
+          stall? Was the CNAME record for ACM in the wrong hosted zone? <!-- [FILL IN] -->
+        </li>
+        <li>
+          <strong>CloudFront returning the wrong content or a cached old version</strong> —
+          Did you need a manual invalidation? What path? <!-- [FILL IN] -->
+        </li>
+        <li>
+          <strong>Redirect loop or 403 after OAC setup</strong> — Bucket policy condition
+          wrong, or CloudFront distribution ID mismatch? <!-- [FILL IN] -->
+        </li>
+        <li>
+          <strong>Any other error you actually hit</strong> <!-- [FILL IN] -->
+        </li>
+      </ul>
+
+      <!-- ── NEW: How I Validated ──────────────────────────── -->
+      <h2>How I Validated It Was Working</h2>
+      <div class="callout">
+        <div class="callout-label">📝 Placeholder — fill in when Phase 2 is complete</div>
+        A page loading in a browser tab is not sufficient validation. Browser and DNS caching
+        can mask a misconfiguration for minutes. Use <code>curl</code> to confirm the actual
+        response path.
+      </div>
+      <p>
+        Validation checklist to fill in:
+      </p>
+      <ul>
+        <li>
+          <code>curl -I https://appcomplish.click</code> — confirm <code>200 OK</code>
+          and a <code>Via: CloudFront</code> header in the response <!-- [FILL IN actual output] -->
+        </li>
+        <li>
+          Direct S3 endpoint URL returns <code>403 Forbidden</code> once OAC is applied <!-- [FILL IN] -->
+        </li>
+        <li>
+          HTTPS enforced — HTTP request redirects to HTTPS <!-- [FILL IN] -->
+        </li>
+        <li>
+          WAF test — confirm a known bad request pattern is blocked (e.g., a request with
+          a SQL injection pattern in the query string) <!-- [FILL IN] -->
+        </li>
+      </ul>
+
+      <!-- ── NEW: Caching Strategy ─────────────────────────── -->
+      <h2>Caching Strategy</h2>
+      <div class="callout">
+        <div class="callout-label">📝 Placeholder — fill in when CloudFront is configured</div>
+        Note the deliberate caching decisions and why — especially anything you chose
+        <em>not</em> to cache and why.
+      </div>
+      <p>
+        For a static site that changes infrequently, CloudFront caching is straightforward —
+        but there are still decisions worth documenting:
+      </p>
+      <ul>
+        <li>
+          <strong>HTML files</strong> — Short TTL or no-cache so page updates propagate quickly
+          without requiring a manual invalidation <!-- [FILL IN your actual TTL choice] -->
+        </li>
+        <li>
+          <strong>CSS / JS / images</strong> — Longer TTL is safe if assets use versioned
+          filenames or content hashing <!-- [FILL IN] -->
+        </li>
+        <li>
+          <strong>Cache invalidation on deploy</strong> — Does the GitHub Actions deploy
+          workflow run <code>aws cloudfront create-invalidation</code>? <!-- [FILL IN] -->
+        </li>
+      </ul>
+
       <!-- Section 5 -->
       <h2>What Would Break at 10× the Scale?</h2>
       <p>
@@ -192,7 +308,7 @@
         <div class="callout-label">Showing Growth</div>
         The next phase of this project addresses both points above: Terraform will provision
         the full stack, and GitHub Actions will automate every deploy.
-        <a href="../index.html">See planned projects →</a>
+        <a href="/">See planned projects →</a>
       </div>
 
     </div>
@@ -206,6 +322,6 @@
     </p>
   </footer>
 
-  <script src="../../assets/js/main.js"></script>
+  <script src="/assets/js/main.js"></script>
 </body>
 </html>
