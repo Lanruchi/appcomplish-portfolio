@@ -128,31 +128,29 @@ appcomplish-portfolio/
 
 ---
 
-## Project Case Study Standard (5 W's + How + Cost)
+## Project Case Study Standard
 
-Every `src/projects/<slug>.html` follows `docs/templates/project-case-study.html`.
+Every `src/projects/<slug>.html` follows `docs/templates/project-case-study.html`: **ten sections, about 700–900 words**, written so a recruiter gets the point in 30 seconds and the detail in two minutes.
 
-| Section | Answers | Status |
+| # | Section | Purpose |
 |---|---|---|
-| Business Requirement (scenario, needs, design question) — very top | Why it exists | Required |
-| At a glance card (goal, key decision, stack, monthly cost, status) | Summary | Required |
-| Requirements table (requirement, target, status) | What "good" means | Required |
-| What I Built | What | Required |
-| Why This Approach | Why | Required |
-| How It Works (+ architecture diagram) | How | Required |
-| Alternatives I Considered | Why not X | Required |
-| Cost | How much | Required |
-| Tradeoffs | What was given up | Required |
-| Design Considerations (8 Core system-design categories) | Which concepts matter | Required ("n/a — reason" allowed) |
-| What Would Break at 10× the Scale | Limits | Required |
-| What I'd Do Differently | Reflection | Required |
-| In one paragraph (closing summary box) | 30-second version | Required |
-| Who (people, machine-to-machine callers, other systems) | Who | Optional |
-| When (header: start date, phase) | When | Optional |
-| Where (region, environment) | Where | Optional |
-| What I Hit Along the Way · How I Validated It | Evidence | Optional |
+| 1 | Business Requirement | 2-sentence scenario and the design question; says if the workload is static or dynamic |
+| 2 | At a glance | Goal, Key decision, Stack (with region), Who, Monthly cost, Status |
+| 3 | Summary | About 50 words: what, decision, cost, next |
+| 4 | Figure | Diagram; caption says why the design fits and when another (EC2, containers) would |
+| 5 | Requirements | Measurable targets with status |
+| 6 | How It Works | 3–5 steps, one Proof line, Key Decision callout |
+| 7 | Alternatives and Cost | Headline figure, one comparison table with a "Best fit" row, sources |
+| 8 | Design Considerations | 8 Core categories from `docs/system-design-concepts.md`, 3 columns, rows of 12 words or fewer |
+| 9 | Problems I Solved | Real errors only: error, cause, fix. Required once there are real problems; omit it when there are none, never invent one |
+| 10 | Limits and Next Steps | Tradeoffs, what breaks at 10× scale, what I'd do differently, what's next |
 
-- Optional sections may be skipped only with "n/a — reason". "Not available" is acceptable for a value you cannot find.
-- **Cost:** compare at least two options, give estimates, state what the numbers assume in a sentence, and link every figure to an AWS pricing page or https://calculator.aws/.
-- **Brevity:** no prose block over ~100 words when a table or bullets would do. Cost is a highlighted block: headline figure, comparison table with a "Best fit" row, and a levers table (lever, saves, effort, risk). At most one "Principle" callout per page.
-- No `TODO:` may remain on a published page. `/review` enforces this; `/project <slug>` helps fill the sections.
+- Sections 1–8 and 10 are always required; section 9 follows the rule above. "n/a — reason" is allowed for a Design Considerations row; "Not available" for a value you cannot find. Who, When and Where live in the glance card and header.
+- **Reference pages:** `src/projects/s3-static-website.html` and `src/projects/s3-cicd-pipeline.html` are the models. New pages match their structure, tone, tables and length; copy the template, then compare against them.
+- **Cost:** compare at least two options, give estimates, and link every figure to an AWS pricing page or https://calculator.aws/.
+- **Writing rules:**
+  1. **Be explicit.** On first use write the full name: "Amazon S3 bucket" not "bucket", "IAM role" not "role", and spell out "OpenID Connect (OIDC)", "AWS Security Token Service (STS)" and similar once per page. Name the actual tool, not "the pipeline" or "the server". Diagram labels may use acronyms defined in the figure's aria-label or caption.
+  2. **Say why.** Every caption, decision and table row gives the reason, not just the fact.
+  3. **State the scope.** Say what kind of workload the design is for (static vs dynamic, small vs large) and when a different choice, such as EC2 or containers for a dynamic app, would be better.
+- **Brevity:** no prose block over ~100 words when a table or bullets would do. No "coming soon" or placeholder sections on a public page; add the section when the work exists.
+- No `TODO:` or "Placeholder" may remain on a published page. `/review` enforces this; `/project <slug>` helps fill the sections.
