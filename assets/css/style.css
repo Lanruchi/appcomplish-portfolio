@@ -253,6 +253,7 @@ a:hover { text-decoration: underline; }
 .card-status--done   { color: var(--green); }
 .card-status--wip    { color: var(--orange); }
 .card-status--planned{ color: var(--text-muted); }
+.card-status--built  { color: var(--green); }
 .card-status::before {
   content: '';
   width: 7px; height: 7px;
