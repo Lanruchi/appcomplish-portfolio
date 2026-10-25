@@ -12,6 +12,7 @@ appcomplish-portfolio/
 │   │   ├── kickoff.md                 # /kickoff   think-first start
 │   │   ├── branch.md                  # /branch    create feature branch
 │   │   ├── changes.md                 # /changes   show diff, stage nothing
+│   │   ├── concepts.md                # /concepts  fill Design Considerations from the cheat sheet
 │   │   ├── project.md                 # /project  interview-driven case study (5 W's + How + Cost)
 │   │   ├── review.md                  # /review    code review checklist
 │   │   ├── commit.md                  # /commit    README check + approved commit
@@ -50,6 +51,7 @@ appcomplish-portfolio/
 └── docs/
     ├── conventions.md                 # ← YOU ARE HERE
     ├── git-workflow.md                # Branch → review → commit → PR flow
+    ├── system-design-concepts.md      # Condensed cheat sheet read by /concepts
     ├── templates/
     │   └── project-case-study.html    # Case study template (outside src/, never deployed)
     └── build-and-test.md              # Run, pre-upload checklist, deploy
@@ -128,14 +130,19 @@ Every `src/projects/<slug>.html` follows `docs/templates/project-case-study.html
 
 | Section | Answers | Status |
 |---|---|---|
+| Business Requirement (scenario, needs, design question) — very top | Why it exists | Required |
+| At a glance card (goal, key decision, stack, monthly cost, status) | Summary | Required |
+| Requirements table (requirement, target, status) | What "good" means | Required |
 | What I Built | What | Required |
 | Why This Approach | Why | Required |
 | How It Works (+ architecture diagram) | How | Required |
 | Alternatives I Considered | Why not X | Required |
 | Cost | How much | Required |
 | Tradeoffs | What was given up | Required |
+| Design Considerations (8 Core system-design categories) | Which concepts matter | Required ("n/a — reason" allowed) |
 | What Would Break at 10× the Scale | Limits | Required |
 | What I'd Do Differently | Reflection | Required |
+| In one paragraph (closing summary box) | 30-second version | Required |
 | Who (people, machine-to-machine callers, other systems) | Who | Optional |
 | When (header: start date, phase) | When | Optional |
 | Where (region, environment) | Where | Optional |
@@ -143,4 +150,5 @@ Every `src/projects/<slug>.html` follows `docs/templates/project-case-study.html
 
 - Optional sections may be skipped only with "n/a — reason". "Not available" is acceptable for a value you cannot find.
 - **Cost:** compare at least two options, give estimates, state what the numbers assume in a sentence, and link every figure to an AWS pricing page or https://calculator.aws/.
+- **Brevity:** no prose block over ~100 words when a table or bullets would do. Cost is a highlighted block: headline figure, comparison table with a "Best fit" row, and a levers table (lever, saves, effort, risk). At most one "Principle" callout per page.
 - No `TODO:` may remain on a published page. `/review` enforces this; `/project <slug>` helps fill the sections.
