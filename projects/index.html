@@ -132,11 +132,31 @@
       <div class="card-grid">
 
         <div class="card">
-          <span class="card-status card-status--planned">Planned</span>
+          <span class="card-status card-status--built">Built</span>
+          <h3>Market Sentiment Trade Trigger</h3>
+          <p>
+            Polls Finnhub for recent company news, scores each headline with OpenAI,
+            and fires a trade webhook when sentiment crosses a threshold. Runs on a
+            configurable symbol watchlist with deduplication to avoid reacting to
+            the same headline twice.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Python</span>
+            <span class="tag">OpenAI</span>
+            <span class="tag">Finnhub API</span>
+            <span class="tag">Alpaca</span>
+          </div>
+          <a class="card-link" href="https://github.com/Lanruchi/alpaca-trade" target="_blank" rel="noopener">View on GitHub →</a>
+        </div>
+
+        <div class="card">
+          <span class="card-status card-status--built">Built</span>
           <h3>OptiBizIQ — POS Analytics Pipeline</h3>
           <p>
-            Square POS data → Python analytics → OpenAI-generated daily
-            business summary → Telegram delivery. Real production use case.
+            Tutorial-guided project exploring AI tooling: pulls Square POS data,
+            generates daily business summaries with OpenAI, and delivers them via
+            Telegram. Built while learning Python, prompt engineering, and API
+            integration basics.
           </p>
           <div class="tag-row">
             <span class="tag">Python</span>
@@ -144,7 +164,7 @@
             <span class="tag">Square API</span>
             <span class="tag">Telegram</span>
           </div>
-          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+          <a class="card-link" href="https://github.com/Lanruchi/OptiBizIQ" target="_blank" rel="noopener">View on GitHub →</a>
         </div>
 
       </div>
