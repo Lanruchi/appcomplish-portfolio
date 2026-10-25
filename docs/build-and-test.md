@@ -9,7 +9,7 @@ No build step. `cd src && python -m http.server 8000` → http://localhost:8000
 - [ ] Looks right at phone width
 - [ ] Claims, dates and certs are accurate; nothing private
 - [ ] Resume PDF and profile photo are in `src/assets/`
+- [ ] Dry-run the deploy workflow if you changed deletions/renames (`--delete` removes files not in `src/`)
 
-## Deploy (manual for now)
-Upload the contents of `src/` to the S3 bucket in the AWS console, keeping folders and overwriting existing files.
-Later: `aws s3 sync src/ s3://<bucket> --delete`, then Terraform, then GitHub Actions.
+## Deploy
+Automatic: push to `main` → GitHub Actions syncs `src/` to S3. Manual: Actions → Deploy to S3 → Run workflow (dry run by default). One-time AWS/GitHub setup: `docs/aws-deploy-setup.md`.

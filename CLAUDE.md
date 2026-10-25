@@ -32,10 +32,10 @@ Goal: document AWS bootcamp projects as real case studies with decisions, tradeo
 
 ## Stack
 Static HTML/CSS/JS — no build step, no framework. All site files live in `src/` (the deploy root).
-Hosted on S3 + CloudFront. Deployed manually (console upload) for now.
+Hosted on S3 + CloudFront. Deployed by GitHub Actions to S3.
 
 ## Deploy
-Manual for now: upload the contents of `src/` to the S3 bucket via the AWS console. No CLI, Terraform, or CI/CD yet — do not add deploy automation unless asked.
+GitHub Actions syncs `src/` to S3 on push to `main` (OIDC role, no stored keys). Real values live in the GitHub `production` environment; `.env` stays local and uncommitted. See `docs/aws-deploy-setup.md`.
 
 See `docs/conventions.md` for the full folder tree.
 Run `/structure` to print the tree on demand.
