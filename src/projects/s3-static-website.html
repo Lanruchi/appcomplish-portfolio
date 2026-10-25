@@ -21,7 +21,7 @@
         </svg>
       </button>
       <ul class="nav-links" id="nav-links">
-        <li><a href="../index.html" class="active">Projects</a></li>
+        <li><a href="../projects.html" class="active">Projects</a></li>
         <li><a href="../about.html">About</a></li>
         <li><a href="../resume.html">Resume &amp; Certs</a></li>
       </ul>
@@ -31,7 +31,7 @@
   <!-- ── Article header ──────────────────────────────────── -->
   <header class="article-header">
     <div class="container--narrow">
-      <a class="back-link" href="../index.html">← All Projects</a>
+      <a class="back-link" href="../projects.html">← All Projects</a>
       <div class="tag-row">
         <span class="tag">AWS</span>
         <span class="tag">S3</span>
@@ -133,6 +133,57 @@
           application servers.
         </li>
       </ul>
+
+      <!-- Section: Cost -->
+      <h2>Cost</h2>
+      <p>
+        Rough monthly estimates for a low-traffic portfolio site in <code>us-east-1</code>
+        (a few MB of files, a few thousand page views). Estimates only — confirm on the
+        pricing pages linked below before relying on any figure.
+      </p>
+      <div class="table-wrap">
+        <table class="cost-table">
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Main cost drivers</th>
+              <th>Estimated monthly</th>
+              <th>Latency &amp; security</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>S3 website endpoint only</td>
+              <td>Route 53 hosted zone, tiny storage and request charges</td>
+              <td>Under $1</td>
+              <td>Served from one region, no edge cache. HTTP only. Bucket must be public.</td>
+            </tr>
+            <tr>
+              <td>S3 + CloudFront + ACM</td>
+              <td>Same as above; CloudFront's free tier covers this traffic and ACM public certificates are free</td>
+              <td>Under $1 (within free tier)</td>
+              <td>Cached at edge locations, HTTPS on the custom domain, bucket can be private behind Origin Access Control.</td>
+            </tr>
+            <tr>
+              <td>S3 + CloudFront + ACM + WAF</td>
+              <td>AWS WAF: a web ACL plus a charge per rule, on top of the above</td>
+              <td>About $6–8, mostly WAF</td>
+              <td>Adds request filtering at the edge. Latency measured: not available yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>What this means:</strong> CloudFront is effectively free at this scale, so the
+        decision to add it is about HTTPS, edge caching and a private bucket, not money.
+        WAF is the opposite: it would cost more than everything else combined for a site with
+        no login or form, so it is the first thing to question.
+        Sources:
+        <a href="https://aws.amazon.com/s3/pricing/" target="_blank" rel="noopener">S3</a> ·
+        <a href="https://aws.amazon.com/cloudfront/pricing/" target="_blank" rel="noopener">CloudFront</a> ·
+        <a href="https://aws.amazon.com/waf/pricing/" target="_blank" rel="noopener">WAF</a> ·
+        <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
+      </p>
 
       <!-- Section 4 -->
       <h2>Tradeoffs</h2>
@@ -308,7 +359,7 @@
         <div class="callout-label">Showing Growth</div>
         The next phase of this project addresses both points above: Terraform will provision
         the full stack, and GitHub Actions will automate every deploy.
-        <a href="../index.html">See planned projects →</a>
+        <a href="../projects.html">See all projects →</a>
       </div>
 
     </div>

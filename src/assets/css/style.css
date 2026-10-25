@@ -421,6 +421,33 @@ a:hover { text-decoration: underline; }
   margin-bottom: 0.35rem;
 }
 
+/* ── Cost comparison table ───────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0;
+}
+.cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.cost-table th,
+.cost-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.cost-table th {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+}
+.cost-table td:first-child { font-weight: 600; }
+
 /* ── About page ──────────────────────────────────────────── */
 .about-grid {
   display: grid;
