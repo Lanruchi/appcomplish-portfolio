@@ -11,6 +11,7 @@ appcomplish-portfolio/
 │   ├── commands/                      # Slash commands
 │   │   ├── kickoff.md                 # /kickoff   think-first start
 │   │   ├── branch.md                  # /branch    create feature branch
+│   │   ├── changes.md                 # /changes   show diff, stage nothing
 │   │   ├── review.md                  # /review    code review checklist
 │   │   ├── commit.md                  # /commit    README check + approved commit
 │   │   ├── push.md                    # /push      push + create/update PR
