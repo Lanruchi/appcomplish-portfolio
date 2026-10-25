@@ -10,6 +10,8 @@ Review `git diff HEAD` (or the PR if a URL is given: `gh pr diff <url>`). Check:
 6. **Consistency:** matches existing page structure and `docs/conventions.md` file placement
 7. **Docs:** README/conventions updated if layout or deploy steps changed
 
+8. **Project case study pages** (`src/projects/*.html`): all REQUIRED sections present (What I Built, Why, How It Works, Alternatives, **Cost**, Tradeoffs, 10× Scale, What I'd Do Differently, diagram); optional ones (Who, When, Where, What I Hit, How I Validated) are filled or marked "n/a — reason"; Cost compares ≥2 options and every figure links to an AWS pricing page or calculator; no leftover `TODO:`. Template: `docs/templates/project-case-study.html`. A missing required section is High; leftover `TODO:` or an unsourced price is Critical to publish.
+
 Output only findings, one per block, then a **PASS** or **BLOCK** verdict (BLOCK = secrets, broken key links, or false claims):
 ```
 📁 File: <path>  📍 Line: <n>  🔴/🟡/🟢 <Critical/High/Low>
