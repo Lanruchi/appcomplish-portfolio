@@ -535,6 +535,18 @@ a:hover { text-decoration: underline; }
   color: var(--text-muted);
   border: 2px dashed var(--border);
 }
+.about-avatar--photo {
+  border: none;
+  background: none;
+  overflow: hidden;
+}
+.about-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
 .about-body h2 {
   font-size: 1.2rem;
   font-weight: 700;
