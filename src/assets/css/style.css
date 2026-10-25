@@ -508,7 +508,7 @@ a:hover { text-decoration: underline; }
   background: var(--tag-bg);
   color: var(--tag-text);
 }
-.pill--decided { background: var(--green); color: #fff; }
+.pill--decided { background: #15803d; color: #fff; }
 .pill--planned { background: var(--accent-light); color: var(--accent); }
 .pill--na { background: var(--tag-bg); color: var(--text-muted); }
 
