@@ -6,6 +6,7 @@
   REQUIRED sections must be filled before publishing.
   OPTIONAL sections may be marked "n/a" with a one-line reason; "Not available" is fine for a value you don't have.
   Every `TODO:` below must be replaced or removed. /review blocks pages that still contain "TODO:".
+  BREVITY: no prose block over ~100 words when a table or bullets would do.
   Prices must link to an AWS pricing page or the AWS Pricing Calculator (https://calculator.aws/).
 -->
 <html lang="en">
@@ -56,11 +57,43 @@
   <article class="article-body">
     <div class="container--narrow">
 
+      <!-- BUSINESS REQUIREMENT (required, very top): a short scenario, what the business needs, and the design question -->
+      <div class="callout">
+        <div class="callout-label">Business Requirement</div>
+        <p>TODO: scenario in 2–3 sentences — who needs what and why now.</p>
+        <ul>
+          <li>TODO: need 1 (plain language)</li>
+          <li>TODO: need 2</li>
+          <li>TODO: need 3</li>
+        </ul>
+        <p><strong>TODO: the design question, e.g. "How would you host it?"</strong></p>
+      </div>
+
       <!-- DIAGRAM (required): architecture image in ../assets/images/projects/<slug>/ with alt text -->
       <div class="diagram-box">
         <img src="../assets/images/projects/TODO-slug/architecture.png" alt="TODO: describe the architecture" />
       </div>
       <p class="diagram-caption">TODO: Figure 1 — one-line caption.</p>
+
+      <!-- AT A GLANCE (required): five fields, one line each -->
+      <dl class="glance">
+        <div><dt>Goal</dt><dd>TODO</dd></div>
+        <div><dt>Key decision</dt><dd>TODO</dd></div>
+        <div><dt>Stack</dt><dd>TODO</dd></div>
+        <div><dt>Monthly cost</dt><dd>TODO</dd></div>
+        <div><dt>Status</dt><dd>TODO</dd></div>
+      </dl>
+
+      <!-- REQUIREMENTS (required): measurable targets. Status: Met / Planned / Not measured -->
+      <h2>Requirements</h2>
+      <div class="table-wrap">
+        <table class="cost-table">
+          <thead><tr><th>Requirement</th><th>Target</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- WHO (optional): users, or machine-to-machine callers, or other systems. "n/a" + reason is fine. -->
       <h2>Who</h2>
@@ -94,7 +127,12 @@
 
       <!-- COST (required): estimates are fine. Link every figure to a pricing page or calculator.
            Use "Not available" for a value you cannot find. Compare at least two options. -->
+      <section class="cost-section" id="cost">
       <h2>Cost</h2>
+      <div class="cost-headline">
+        <span class="cost-figure">TODO: $X</span>
+        <span class="cost-caption">TODO: per month, for which option (estimate) and the biggest cost driver.</span>
+      </div>
       <p>TODO: what the numbers assume (workload, region) in one or two sentences. Estimates only.</p>
       <div class="table-wrap">
         <table class="cost-table">
@@ -103,7 +141,7 @@
           </thead>
           <tbody>
             <tr><td>TODO: Option A</td><td>TODO</td><td>TODO</td><td>TODO</td></tr>
-            <tr><td>TODO: Option B</td><td>TODO</td><td>TODO</td><td>TODO</td></tr>
+            <tr class="is-best"><td>TODO: Option B <span class="pill pill--decided">Best fit</span></td><td>TODO</td><td>TODO</td><td>TODO</td></tr>
           </tbody>
         </table>
       </div>
@@ -113,11 +151,50 @@
         <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
       </p>
 
+      <!-- COST LEVERS (required): ways to spend less without losing a requirement -->
+      <div class="table-wrap">
+        <table class="cost-table">
+          <thead><tr><th>Lever</th><th>Saves</th><th>Effort</th><th>Risk</th></tr></thead>
+          <tbody>
+            <tr><td>TODO</td><td>TODO</td><td>TODO</td><td>TODO</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Quick win:</strong> TODO</p>
+      <div class="callout">
+        <div class="callout-label">Principle</div>
+        TODO: one sentence takeaway (max one per page).
+      </div>
+
+      </section>
+
       <!-- TRADEOFFS (required) -->
       <h2>Tradeoffs</h2>
       <ul>
         <li><strong>TODO: Tradeoff</strong> — what you gave up and what you got.</li>
       </ul>
+
+      <!-- DESIGN CONSIDERATIONS (required): one row per Core category from docs/system-design-concepts.md.
+           Each row is answered or marked "n/a — reason". Run /concepts <slug> to fill it. -->
+      <h2>Design Considerations</h2>
+      <p>TODO: one sentence — which system-design concerns matter most for this project.</p>
+      <div class="table-wrap">
+        <table class="cost-table design-table">
+          <thead>
+            <tr><th>Category</th><th>Concept(s)</th><th>How it applies here</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Requirements &amp; workload</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Scalability &amp; performance</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Availability &amp; fault tolerance</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Data &amp; consistency</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Security</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Observability</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Deployment &amp; DevOps</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr><td>Cost &amp; trade-offs</td><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- EVIDENCE (optional but recommended): what went wrong, how you validated it worked -->
       <h2>What I Hit Along the Way</h2>
@@ -134,6 +211,12 @@
       <!-- REFLECTION (required) -->
       <h2>What I'd Do Differently</h2>
       <p>TODO: honest hindsight.</p>
+
+      <!-- IN ONE PARAGRAPH (required): the 30-second version for a reader who skips the rest -->
+      <div class="callout">
+        <div class="callout-label">In one paragraph</div>
+        TODO: what it is, the key decision, the cost, and what is next.
+      </div>
 
     </div>
   </article>

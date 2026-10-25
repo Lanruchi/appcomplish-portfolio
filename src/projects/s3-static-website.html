@@ -53,6 +53,23 @@
   <article class="article-body">
     <div class="container--narrow">
 
+      <!-- Business Requirement -->
+      <div class="callout">
+        <div class="callout-label">Business Requirement</div>
+        <p>
+          I'm moving into cloud engineering and need a public portfolio that recruiters and
+          hiring managers anywhere can open on a phone or laptop. It has to show real AWS
+          work, cost almost nothing, and not become another system I have to patch or babysit.
+        </p>
+        <ul>
+          <li>Reachable from anywhere at my own domain, <code>appcomplish.click</code></li>
+          <li>No servers to patch, scale or monitor</li>
+          <li>Running cost in single-digit dollars a month</li>
+          <li>HTTPS and a non-public origin once the basics work</li>
+        </ul>
+        <p><strong>How would you host it?</strong></p>
+      </div>
+
       <!-- ── BEFORE architecture diagram ──────────────────── -->
       <div class="diagram-box">
         <!-- Replace with: <img src="../assets/images/projects/s3-static-website/architecture-before.png" alt="Architecture before CloudFront" /> -->
@@ -74,6 +91,30 @@
         </div>
       </div>
       <p class="diagram-caption">Figure 2 — Target architecture: traffic routed through CloudFront with WAF at the edge and S3 locked to CloudFront-only via Origin Access Control.</p>
+
+      <!-- At a glance -->
+      <dl class="glance">
+        <div><dt>Goal</dt><dd>Host my portfolio on AWS with no servers</dd></div>
+        <div><dt>Key decision</dt><dd>Static S3 hosting over a VPS or EC2</dd></div>
+        <div><dt>Stack</dt><dd>S3, Route 53 (CloudFront, ACM, WAF planned)</dd></div>
+        <div><dt>Monthly cost</dt><dd>Under $1 (WAF would add about $6–8)</dd></div>
+        <div><dt>Status</dt><dd>Phase 1 live, Phase 2 in progress</dd></div>
+      </dl>
+
+      <!-- Requirements -->
+      <h2>Requirements</h2>
+      <div class="table-wrap">
+        <table class="cost-table">
+          <thead><tr><th>Requirement</th><th>Target</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Public site on my own domain</td><td>Live on <code>appcomplish.click</code></td><td><span class="pill pill--decided">Met (Phase 1)</span></td></tr>
+            <tr><td>No servers to patch or run</td><td>Zero servers</td><td><span class="pill pill--decided">Met</span></td></tr>
+            <tr><td>Low running cost</td><td>Single-digit dollars a month</td><td><span class="pill pill--decided">Met (estimate)</span></td></tr>
+            <tr><td>HTTPS on the custom domain</td><td>TLS certificate via ACM</td><td><span class="pill pill--planned">Planned (Phase 2)</span></td></tr>
+            <tr><td>Origin not publicly readable</td><td>Private bucket behind Origin Access Control</td><td><span class="pill pill--planned">Planned (Phase 2)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Section 1 -->
       <h2>What I Built</h2>
@@ -135,7 +176,12 @@
       </ul>
 
       <!-- Section: Cost -->
+      <section class="cost-section" id="cost">
       <h2>Cost</h2>
+      <div class="cost-headline">
+        <span class="cost-figure">Under $1</span>
+        <span class="cost-caption">a month with S3, Route 53 and CloudFront (estimate). WAF would add about $6–8.</span>
+      </div>
       <p>
         Rough monthly estimates for a low-traffic portfolio site in <code>us-east-1</code>
         (a few MB of files, a few thousand page views). Estimates only — confirm on the
@@ -158,8 +204,8 @@
               <td>Under $1</td>
               <td>Served from one region, no edge cache. HTTP only. Bucket must be public.</td>
             </tr>
-            <tr>
-              <td>S3 + CloudFront + ACM</td>
+            <tr class="is-best">
+              <td>S3 + CloudFront + ACM <span class="pill pill--decided">Best fit</span></td>
               <td>Same as above; CloudFront's free tier covers this traffic and ACM public certificates are free</td>
               <td>Under $1 (within free tier)</td>
               <td>Cached at edge locations, HTTPS on the custom domain, bucket can be private behind Origin Access Control.</td>
@@ -184,6 +230,24 @@
         <a href="https://aws.amazon.com/waf/pricing/" target="_blank" rel="noopener">WAF</a> ·
         <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
       </p>
+
+      <h3>Ways to spend less</h3>
+      <div class="table-wrap">
+        <table class="cost-table">
+          <thead><tr><th>Lever</th><th>Saves</th><th>Effort</th><th>Risk</th></tr></thead>
+          <tbody>
+            <tr><td>Leave WAF off until the site has a form or login</td><td>About $6–8 a month</td><td>None</td><td>No request filtering at the edge</td></tr>
+            <tr><td>Version asset filenames instead of invalidating the cache</td><td>Avoids invalidation fees past the free tier</td><td>Low</td><td>Needs a naming habit</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Quick win:</strong> keep WAF off for now.</p>
+      <div class="callout">
+        <div class="callout-label">Principle</div>
+        Add a managed service when it solves a problem you actually have, not because it exists.
+      </div>
+
+      </section>
 
       <!-- Section 4 -->
       <h2>Tradeoffs</h2>
@@ -210,6 +274,75 @@
           <code>us-east-1</code>. This surprises most people the first time.
         </li>
       </ul>
+
+      <!-- Section: Design Considerations -->
+      <h2>Design Considerations</h2>
+      <p>
+        For a small static site the system-design concerns that matter most are availability,
+        security of the origin, and how changes get deployed. Data consistency does not apply.
+      </p>
+      <div class="table-wrap">
+        <table class="cost-table design-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Concept(s)</th>
+              <th>How it applies here</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Requirements &amp; workload</td>
+              <td>Users, workload, assumptions</td>
+              <td>Visitors are recruiters and hiring managers using browsers. Low traffic, static content, no logins.</td>
+              <td><span class="pill pill--decided">Decided</span></td>
+            </tr>
+            <tr>
+              <td>Scalability &amp; performance</td>
+              <td>Edge caching, CDN, latency</td>
+              <td>S3 alone serves from one region with no edge cache. CloudFront adds edge caching for distant visitors. Latency measured: not available yet.</td>
+              <td><span class="pill pill--planned">Planned (Phase 2)</span></td>
+            </tr>
+            <tr>
+              <td>Availability &amp; fault tolerance</td>
+              <td>SPOF, redundancy, graceful degradation</td>
+              <td>No servers to fail, and S3 Standard stores objects across multiple Availability Zones per <a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">AWS</a>. The single bucket and DNS are the remaining single points; no multi-region copy or recovery plan yet.</td>
+              <td><span class="pill pill--planned">Partly decided</span></td>
+            </tr>
+            <tr>
+              <td>Data &amp; consistency</td>
+              <td>State, database, CAP</td>
+              <td>n/a — static files only; no database or shared state.</td>
+              <td><span class="pill pill--na">n/a</span></td>
+            </tr>
+            <tr>
+              <td>Security</td>
+              <td>Least privilege, encryption in transit, defense in depth</td>
+              <td>Phase 1 serves a public read-only bucket over HTTP. Phase 2 adds HTTPS (ACM) and a private bucket behind Origin Access Control. Deploys will use a least-privilege role with short-lived credentials, no stored keys.</td>
+              <td><span class="pill pill--planned">Planned</span></td>
+            </tr>
+            <tr>
+              <td>Observability</td>
+              <td>Logs, metrics, alerting</td>
+              <td>Access logs and alarms are not set up yet.</td>
+              <td><span class="pill pill--na">Not available yet</span></td>
+            </tr>
+            <tr>
+              <td>Deployment &amp; DevOps</td>
+              <td>CI/CD, IaC, rollback</td>
+              <td>Today: manual console upload. Next: a GitHub Actions deploy and Terraform for the stack. Rollback means reverting the commit and redeploying.</td>
+              <td><span class="pill pill--planned">Planned</span></td>
+            </tr>
+            <tr>
+              <td>Cost &amp; trade-offs</td>
+              <td>Pay-as-you-go, cost vs performance</td>
+              <td>Everything is under about $1 a month except WAF. See <a href="#cost">Cost</a>.</td>
+              <td><span class="pill pill--decided">Decided</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- ── NEW: Locking Down the S3 Origin ──────────────── -->
       <h2>Locking Down the S3 Origin</h2>
@@ -353,6 +486,14 @@
         <code>main</code>. Deploying by hand is the kind of friction that slows down
         iteration.
       </p>
+
+      <div class="callout">
+        <div class="callout-label">In one paragraph</div>
+        I host this portfolio as a static site on S3 with Route 53 because a static site needs no
+        servers to patch or run. The next step is CloudFront and ACM for HTTPS and a private
+        bucket, which is effectively free at this traffic. WAF would cost more than everything
+        else combined, so I'm holding it back until the site needs it.
+      </div>
 
       <!-- Growth note -->
       <div class="callout" style="margin-top:2rem;">

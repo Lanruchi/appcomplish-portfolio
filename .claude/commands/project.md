@@ -4,7 +4,7 @@ Usage: `/project <slug>` — e.g. `/project s3-static-website`.
 
 1. If `src/projects/<slug>.html` does not exist, copy `docs/templates/project-case-study.html` to it. If it exists, read it and list which sections are missing or still contain `TODO:`.
 2. Interview the user ONE section at a time, in this order. Offer a short draft from what the conversation already established, and let the user edit it. Never invent facts, prices, or measurements — ask, or write "Not available".
-   - REQUIRED: What I Built · Why This Approach · How It Works · Alternatives · **Cost** · Tradeoffs · What Would Break at 10× · What I'd Do Differently · architecture diagram
+   - REQUIRED: Business Requirement (scenario, 3–4 plain-language needs, one design question; very top) · At a glance · Requirements (measurable targets + status) · What I Built · Why This Approach · How It Works · Alternatives · **Cost** · Tradeoffs · **Design Considerations** (run `/concepts <slug>`) · What Would Break at 10× · What I'd Do Differently · In one paragraph · architecture diagram
    - OPTIONAL: Who (users, machine-to-machine callers, other systems) · When (in the header) · Where (region, environment) · What I Hit · How I Validated
    - Optional sections may be marked "n/a — <reason>". Required ones may not be skipped; if the answer is unknown, write "Not available" and say why.
 3. Cost section rules: compare at least two options; estimates are fine; state the assumption in a sentence; link each figure's source (AWS pricing page or https://calculator.aws/); say when the pricier option becomes worth it.
