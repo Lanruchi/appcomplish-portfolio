@@ -101,7 +101,8 @@ appcomplish-portfolio/
 7. **Hooks** (pre/post tool events) go in `.claude/settings.json` under `"hooks"`.
 8. **Secrets** — never commit `.env`; commit `.env.example` with empty placeholders.
 9. **Git** — follow `docs/git-workflow.md`: feature branch, `/review`, commit, PR. Never commit to `main`.
-10. **One responsibility per file** — keep JS/CSS modules focused; no unrelated code in `main.js`.
+10. **Theme** — the site is always dark (tokens at `:root` in `style.css`); there is no light theme, so check new components for contrast on `--bg` / `--bg-subtle`.
+11. **One responsibility per file** — keep JS/CSS modules focused; no unrelated code in `main.js`.
 
 ---
 

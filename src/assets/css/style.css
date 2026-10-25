@@ -3,16 +3,19 @@
    ========================================================= */
 
 /* ── Tokens ──────────────────────────────────────────────── */
+/* Always dark: the site ignores the device's light/dark setting on purpose. */
 :root {
-  --bg:          #ffffff;
-  --bg-subtle:   #f8fafc;
-  --border:      #e2e8f0;
-  --text:        #0f172a;
-  --text-muted:  #64748b;
-  --accent:      #0369a1;      /* AWS-adjacent blue */
-  --accent-light:#e0f2fe;
-  --tag-bg:      #f1f5f9;
-  --tag-text:    #334155;
+  color-scheme: dark;
+
+  --bg:          #0f172a;
+  --bg-subtle:   #1e293b;
+  --border:      #334155;
+  --text:        #f1f5f9;
+  --text-muted:  #94a3b8;
+  --accent:      #38bdf8;      /* AWS-adjacent blue */
+  --accent-light:#0c4a6e;
+  --tag-bg:      #1e293b;
+  --tag-text:    #cbd5e1;
   --green:       #16a34a;
   --orange:      #ea580c;
 
@@ -24,31 +27,6 @@
   --max-wide:    1100px;
 
   --nav-h: 60px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg:         #0f172a;
-    --bg-subtle:  #1e293b;
-    --border:     #334155;
-    --text:       #f1f5f9;
-    --text-muted: #94a3b8;
-    --accent:     #38bdf8;
-    --accent-light:#0c4a6e;
-    --tag-bg:     #1e293b;
-    --tag-text:   #cbd5e1;
-  }
-}
-:root[data-theme="dark"] {
-  --bg:         #0f172a;
-  --bg-subtle:  #1e293b;
-  --border:     #334155;
-  --text:       #f1f5f9;
-  --text-muted: #94a3b8;
-  --accent:     #38bdf8;
-  --accent-light:#0c4a6e;
-  --tag-bg:     #1e293b;
-  --tag-text:   #cbd5e1;
 }
 
 /* ── Reset ───────────────────────────────────────────────── */
@@ -509,7 +487,7 @@ a:hover { text-decoration: underline; }
   color: var(--tag-text);
 }
 .pill--decided { background: #15803d; color: #fff; }
-.pill--planned { background: var(--accent-light); color: var(--accent); }
+.pill--planned { background: var(--accent-light); color: #7dd3fc; }
 .pill--na { background: var(--tag-bg); color: var(--text-muted); }
 
 /* ── About page ──────────────────────────────────────────── */
@@ -596,7 +574,7 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 0.5rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--bg);
   font-weight: 600;
   font-size: 0.9rem;
   padding: 0.65rem 1.25rem;
