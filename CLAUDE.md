@@ -19,6 +19,7 @@ Never create a new top-level folder without verifying no existing folder fits.
 ## Governance
 - Follow `docs/git-workflow.md` for all commits, PRs, and merges — no exceptions.
 - Workflow commands: `/kickoff` `/branch` `/changes` `/review` `/commit` `/push` `/compact` `/structure`.
+- **Review gate:** before proposing ANY commit, invoke `/review` with the Skill tool and show its full output. Never say a change is reviewed or "clean" unless the skill ran for these exact changes. Every commit proposal states: `Review: <PASS|BLOCK>, run <just now>`. No review result shown = do not commit, push or merge.
 - Never run `git add`, `commit` or `push` until the user has seen the diff (`/changes`) and approved. Leave changes unstaged for review.
 - Never hardcode secrets; use empty placeholders only.
 - If any requirement is ambiguous or has multiple valid paths, stop and prompt before proceeding.
