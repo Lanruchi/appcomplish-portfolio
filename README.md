@@ -22,7 +22,8 @@ appcomplish-portfolio/
 │   ├── resume.html                     # Resume PDF link + cert badges
 │   ├── projects.html                   # All projects listing
 │   ├── projects/
-│   │   └── s3-static-website.html      # Case study: S3 static hosting
+│   │   ├── s3-static-website.html      # Case study: S3 static hosting
+│   │   └── s3-cicd-pipeline.html       # Case study: CI/CD to S3 with GitHub Actions and OIDC
 │   └── assets/
 │       ├── css/style.css               # Shared stylesheet
 │       ├── js/main.js                  # Nav toggle, active link

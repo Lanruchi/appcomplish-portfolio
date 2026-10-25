@@ -23,7 +23,10 @@ IAM → Roles → Create role → **Web identity** → pick the provider above, 
     "Condition": {
       "StringEquals": {
         "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-        "token.actions.githubusercontent.com:sub": "repo:nuru-adeniyi/appcomplish-portfolio:environment:production"
+        "token.actions.githubusercontent.com:sub": [
+          "repo:nuru-adeniyi@6249869/appcomplish-portfolio@1432825391:environment:production",
+          "repo:nuru-adeniyi/appcomplish-portfolio:environment:production"
+        ]
       }
     }
   }]
@@ -40,7 +43,9 @@ IAM → Roles → Create role → **Web identity** → pick the provider above, 
   ]
 }
 ```
-If you rename the GitHub account or repo, update the `sub` value.
+**Check the subject format for your repo** before relying on the name-only form: `gh api repos/OWNER/REPO/actions/oidc/customization/sub`. If it shows `use_immutable_subject: true`, the token's `sub` includes numeric IDs (`repo:OWNER@ID/REPO@ID:environment:production`), and the name-only value will fail with "Not authorized to perform sts:AssumeRoleWithWebIdentity". The policy above lists both. If you rename the account or repo, update the `sub` values.
+
+**Permissions are separate from trust:** the role also needs the permissions policy below, or the login succeeds and S3 calls fail with "no identity-based policy allows s3:ListBucket".
 
 ## 3. Configure GitHub
 Repo → Settings → **Environments** → New environment `production`
