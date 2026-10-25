@@ -18,7 +18,8 @@ Never create a new top-level folder without verifying no existing folder fits.
 
 ## Governance
 - Follow `docs/git-workflow.md` for all commits, PRs, and merges — no exceptions.
-- Workflow commands: `/kickoff` `/branch` `/review` `/commit` `/push` `/compact` `/structure`.
+- Workflow commands: `/kickoff` `/branch` `/changes` `/review` `/commit` `/push` `/compact` `/structure`.
+- Never run `git add`, `commit` or `push` until the user has seen the diff (`/changes`) and approved. Leave changes unstaged for review.
 - Never hardcode secrets; use empty placeholders only.
 - If any requirement is ambiguous or has multiple valid paths, stop and prompt before proceeding.
 
