@@ -50,8 +50,11 @@ Repo → Settings → **Environments** → New environment `production`
 - **Variable** `AWS_REGION` = `us-east-1`
 - **Variable** `S3_BUCKET` = `appcomplish.click`
 
-## 4. First run
-Actions → **Deploy to S3** → Run workflow → leave **dry run** checked. Read the log: `--delete` removes any bucket file not in `src/` (including old sample files). If it looks right, run again with dry run unchecked.
+## 4. Safe rollout (auto-deploy is OFF until you turn it on)
+Pushes to `main` only deploy when the **repo** variable `AUTO_DEPLOY` is `true` (Settings → Secrets and variables → Actions → Variables, or `gh variable set AUTO_DEPLOY --body true`). Leave it unset or `false` until the dry run looks right. Turn it back to `false` to pause deploys.
+
+## 5. First run
+Actions → **Deploy to S3** → Run workflow → **Branch: main** (the environment only allows `main`) → leave **dry run** checked. Read the log: `--delete` removes any bucket file not in `src/` (including old sample files). If it looks right, run again with dry run unchecked.
 
 ## Local `.env`
 `.env.example` lists the same names with empty values. Keep your real `.env` local and uncommitted (it is gitignored). The workflow never reads it; GitHub environment values are the source of truth for deploys.

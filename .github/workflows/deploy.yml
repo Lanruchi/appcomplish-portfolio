@@ -21,7 +21,11 @@ concurrency:
 
 jobs:
   deploy:
+    # Safety switch: pushes only deploy when the repo variable AUTO_DEPLOY is "true".
+    # The manual "Run workflow" button always works (and defaults to a dry run).
+    if: github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     steps:
       - uses: actions/checkout@v4
