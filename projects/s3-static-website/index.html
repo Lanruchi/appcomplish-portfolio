@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S3 Static Website Hosting — Nurudeen Adeyemi</title>
+  <meta name="description" content="Case study: deploying a static portfolio site on Amazon S3 with Route 53, CloudFront, ACM, and WAF. Decisions, tradeoffs, and what I'd do differently." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+</head>
+<body>
+
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="../../index.html">appcomplish<span>.</span>click</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle menu">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html" class="active">Projects</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../resume.html">Resume &amp; Certs</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Article header ──────────────────────────────────── -->
+  <header class="article-header">
+    <div class="container--narrow">
+      <a class="back-link" href="../index.html">← All Projects</a>
+      <div class="tag-row">
+        <span class="tag">AWS</span>
+        <span class="tag">S3</span>
+        <span class="tag">Route 53</span>
+        <span class="tag">CloudFront</span>
+        <span class="tag">ACM</span>
+      </div>
+      <span class="card-status card-status--wip">In Progress</span>
+      <h1>S3 Static Website Hosting</h1>
+      <div class="article-meta">
+        <span>Started: October 2026</span>
+        <span>·</span>
+        <span>Bootcamp: AWS Solutions Architect</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Article body ────────────────────────────────────── -->
+  <article class="article-body">
+    <div class="container--narrow">
+
+      <!-- Architecture diagram -->
+      <div class="diagram-box">
+        <!-- Replace with: <img src="../../assets/images/projects/s3-static-website/architecture.png" alt="Architecture diagram" /> -->
+        <div class="diagram-placeholder">
+          <span>🏗️</span>
+          Architecture diagram coming soon.<br>
+          Will show: Route 53 → CloudFront → S3 origin → ACM → WAF
+        </div>
+      </div>
+      <p class="diagram-caption">Figure 1 — Target architecture for appcomplish.click</p>
+
+      <!-- Section 1 -->
+      <h2>What I Built</h2>
+      <p>
+        A static portfolio website hosted entirely on AWS — no servers, no containers,
+        no runtime to manage. The domain <code>appcomplish.click</code> is registered
+        through Route 53 and resolves to an S3 bucket configured for static website hosting.
+      </p>
+      <p>
+        Phase 1 (complete): S3 bucket + Route 53 DNS + public website endpoint live.
+      </p>
+      <p>
+        Phase 2 (in progress): CloudFront distribution in front of S3, HTTPS via AWS
+        Certificate Manager, and AWS WAF for basic origin protection.
+      </p>
+
+      <!-- Section 2 -->
+      <h2>Why This Approach?</h2>
+      <p>
+        A static site on S3 has essentially zero operational overhead. There is no web server
+        to patch, no process to restart, no ASG to manage. For a portfolio site that serves
+        HTML, CSS, and JavaScript, that's the right level of complexity.
+      </p>
+      <p>
+        S3 also makes the infrastructure transparent — you can see exactly what the bucket
+        policy allows, exactly which files are served, and the cost is single-digit dollars
+        per month for low traffic. That visibility is useful when you're learning: fewer
+        moving parts means clearer cause and effect.
+      </p>
+
+      <div class="callout">
+        <div class="callout-label">Key Decision</div>
+        S3 static hosting over a VPS or EC2 instance. A $5/month Lightsail instance would
+        also work, but it introduces a Linux server, a web server daemon, and ongoing patching
+        — none of which add value for a static site.
+      </div>
+
+      <!-- Section 3 -->
+      <h2>Alternatives I Considered</h2>
+      <ul>
+        <li>
+          <strong>EC2 / Lightsail + Nginx</strong> — More control, but unnecessary complexity
+          for static content. Server-side patching becomes your responsibility.
+        </li>
+        <li>
+          <strong>Vercel / Netlify</strong> — Faster to set up, great DX, but this project
+          is about learning AWS primitives. Using a managed platform would skip the skills
+          I'm trying to build.
+        </li>
+        <li>
+          <strong>AWS Amplify</strong> — Abstracts S3 + CloudFront nicely, but again hides
+          the underlying services. Understanding the pieces separately first makes Amplify
+          more meaningful later.
+        </li>
+        <li>
+          <strong>Elastic Beanstalk</strong> — Overkill for static content; designed for
+          application servers.
+        </li>
+      </ul>
+
+      <!-- Section 4 -->
+      <h2>Tradeoffs</h2>
+      <ul>
+        <li>
+          <strong>No HTTPS on S3 endpoint alone</strong> — S3 static hosting serves HTTP.
+          CloudFront is required to get HTTPS on a custom domain. This is a two-step setup,
+          not one.
+        </li>
+        <li>
+          <strong>No server-side logic</strong> — Dynamic features (contact forms, auth,
+          API calls) require additional services: API Gateway, Lambda, or a third-party form
+          provider.
+        </li>
+        <li>
+          <strong>Cache invalidation cost</strong> — CloudFront charges after 1,000
+          invalidation paths per month. For a frequently updated site, a versioned file
+          naming strategy (<code>style.v2.css</code>) is cleaner than invalidating on every
+          deploy.
+        </li>
+        <li>
+          <strong>ACM certificate must be in us-east-1</strong> — Even if your S3 bucket
+          is in another region, the ACM cert for CloudFront must be provisioned in
+          <code>us-east-1</code>. This surprises most people the first time.
+        </li>
+      </ul>
+
+      <!-- Section 5 -->
+      <h2>What Would Break at 10× the Scale?</h2>
+      <p>
+        Realistically, a portfolio site won't hit scale limits. But the pattern extends to
+        real products, and it's worth thinking through:
+      </p>
+      <ul>
+        <li>
+          <strong>CloudFront handles it.</strong> A CDN in front of S3 means 10× or 100×
+          traffic is just more edge cache hits — S3 itself barely sees the load.
+        </li>
+        <li>
+          <strong>What actually breaks is dynamic content.</strong> If this were a web app
+          — user accounts, orders, a product catalog — the S3 layer stays fine but your
+          API, database, and session management need rethinking at scale.
+        </li>
+        <li>
+          <strong>Build pipeline.</strong> Manually uploading files to S3 breaks the moment
+          there's a team or frequent deploys. CI/CD via GitHub Actions + <code>aws s3 sync</code>
+          is the fix.
+        </li>
+      </ul>
+
+      <!-- Section 6 -->
+      <h2>What I'd Do Differently</h2>
+      <p>
+        Start with Terraform from day one. Clicking through the console is fine for learning,
+        but the moment you want a second environment (staging vs production) or need to
+        rebuild from scratch, manual steps don't scale. IaC makes the infrastructure
+        self-documenting and repeatable.
+      </p>
+      <p>
+        I'd also set up a CI/CD pipeline immediately — even a simple GitHub Actions workflow
+        that runs <code>aws s3 sync</code> and invalidates the CloudFront cache on push to
+        <code>main</code>. Deploying by hand is the kind of friction that slows down
+        iteration.
+      </p>
+
+      <!-- Growth note -->
+      <div class="callout" style="margin-top:2rem;">
+        <div class="callout-label">Showing Growth</div>
+        The next phase of this project addresses both points above: Terraform will provision
+        the full stack, and GitHub Actions will automate every deploy.
+        <a href="../index.html">See planned projects →</a>
+      </div>
+
+    </div>
+  </article>
+
+  <footer>
+    <p>
+      Nurudeen Adeyemi ·
+      <a href="https://github.com/Lanruchi" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script src="../../assets/js/main.js"></script>
+</body>
+</html>

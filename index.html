@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nurudeen Adeyemi — Cloud Engineering Portfolio</title>
+  <meta name="description" content="Cloud engineering portfolio documenting my transition from senior .NET software engineering into AWS and DevOps. Real projects, real decisions, real tradeoffs." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">appcomplish<span>.</span>click</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle menu">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="projects/index.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="resume.html">Resume &amp; Certs</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-label">Cloud Engineering Portfolio</p>
+      <h1>Nurudeen Adeyemi</h1>
+      <p class="hero-bio">
+        Senior software engineer with 12+ years in .NET and distributed systems,
+        now transitioning into AWS cloud architecture and DevOps.
+        This site documents real projects — the decisions, the tradeoffs,
+        and what I'd do differently at 10× the scale.
+      </p>
+      <!-- Cert badges — swap placeholder divs for <img> tags when earned -->
+      <div class="badge-row">
+        <div class="badge-placeholder">AWS SA<br>Associate<br>Coming Soon</div>
+        <div class="badge-placeholder">AWS<br>Practitioner<br>Coming Soon</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Featured Projects ────────────────────────────────── -->
+  <section class="page">
+    <div class="container">
+
+      <div class="section-header">
+        <h2>Projects</h2>
+        <a href="projects/index.html">View all →</a>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- S3 Static Website -->
+        <div class="card">
+          <span class="card-status card-status--wip">In Progress</span>
+          <h3>S3 Static Website Hosting</h3>
+          <p>
+            Deployed a static site to Amazon S3 with custom domain via Route 53.
+            Extending with CloudFront CDN, HTTPS, and WAF.
+          </p>
+          <div class="tag-row">
+            <span class="tag">AWS</span>
+            <span class="tag">S3</span>
+            <span class="tag">Route 53</span>
+            <span class="tag">CloudFront</span>
+          </div>
+          <a class="card-link" href="projects/s3-static-website/index.html">Read case study →</a>
+        </div>
+
+        <!-- Placeholder: next project -->
+        <div class="card">
+          <span class="card-status card-status--planned">Planned</span>
+          <h3>Terraform Infrastructure as Code</h3>
+          <p>
+            Automating the S3 + CloudFront + Route 53 stack with Terraform.
+            Goal: reproducible environments from a single <code>terraform apply</code>.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Terraform</span>
+            <span class="tag">IaC</span>
+            <span class="tag">AWS</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+        </div>
+
+        <!-- Placeholder: AI project -->
+        <div class="card">
+          <span class="card-status card-status--planned">Planned</span>
+          <h3>AI-Powered Business Intelligence</h3>
+          <p>
+            OptiBizIQ — Square POS analytics pipeline with OpenAI-generated
+            daily summaries delivered via Telegram.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Python</span>
+            <span class="tag">OpenAI</span>
+            <span class="tag">Square API</span>
+            <span class="tag">GitHub Actions</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+        </div>
+
+      </div><!-- /card-grid -->
+
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <p>
+      Built and documented by Nurudeen Adeyemi ·
+      <a href="https://github.com/Lanruchi" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Nurudeen Adeyemi</title>
+  <meta name="description" content="Cloud engineering projects documenting real AWS builds, decisions, and tradeoffs." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="../index.html">appcomplish<span>.</span>click</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle menu">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="active">Projects</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../resume.html">Resume &amp; Certs</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero" style="padding:3rem 1.5rem 2.5rem;">
+    <div class="hero-inner">
+      <p class="hero-label">All Projects</p>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.2rem);">What I've Built</h1>
+      <p class="hero-bio" style="font-size:1rem;">
+        Every project here follows the same structure: what I built, why I chose this approach,
+        what the alternatives were, what the tradeoffs are, and how I'd scale it.
+      </p>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="container">
+
+      <!-- AWS / Cloud section -->
+      <div class="section-header">
+        <h2>☁️ AWS &amp; Cloud Infrastructure</h2>
+      </div>
+      <div class="card-grid">
+
+        <div class="card">
+          <span class="card-status card-status--wip">In Progress</span>
+          <h3>S3 Static Website Hosting</h3>
+          <p>
+            Custom domain static site on S3 with Route 53 DNS.
+            Adding CloudFront, HTTPS (ACM), and WAF in subsequent phases.
+          </p>
+          <div class="tag-row">
+            <span class="tag">S3</span>
+            <span class="tag">Route 53</span>
+            <span class="tag">CloudFront</span>
+            <span class="tag">ACM</span>
+            <span class="tag">WAF</span>
+          </div>
+          <a class="card-link" href="s3-static-website/index.html">Read case study →</a>
+        </div>
+
+        <div class="card">
+          <span class="card-status card-status--planned">Planned</span>
+          <h3>Secure VPC Architecture</h3>
+          <p>
+            Private subnets, bastion host, NAT Gateway, security groups,
+            and least-privilege IAM — modelled on real production patterns.
+          </p>
+          <div class="tag-row">
+            <span class="tag">VPC</span>
+            <span class="tag">EC2</span>
+            <span class="tag">IAM</span>
+            <span class="tag">Security</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+        </div>
+
+      </div>
+
+      <hr class="divider" />
+
+      <!-- DevOps / IaC section -->
+      <div class="section-header mt-4">
+        <h2>⚙️ DevOps &amp; Infrastructure as Code</h2>
+      </div>
+      <div class="card-grid">
+
+        <div class="card">
+          <span class="card-status card-status--planned">Planned</span>
+          <h3>Terraform: Static Site Stack</h3>
+          <p>
+            IaC version of the S3 + CloudFront + Route 53 setup.
+            Reproducible environments, state management, remote backend.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Terraform</span>
+            <span class="tag">IaC</span>
+            <span class="tag">S3 Backend</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+        </div>
+
+        <div class="card">
+          <span class="card-status card-status--planned">Planned</span>
+          <h3>CI/CD Pipeline</h3>
+          <p>
+            GitHub Actions pipeline to auto-deploy site changes to S3
+            and invalidate the CloudFront cache on every push to main.
+          </p>
+          <div class="tag-row">
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">CI/CD</span>
+            <span class="tag">AWS CLI</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+        </div>
+
+      </div>
+
+      <hr class="divider" />
+
+      <!-- AI / Automation section -->
+      <div class="section-header mt-4">
+        <h2>🤖 AI &amp; Automation</h2>
+      </div>
+      <div class="card-grid">
+
+        <div class="card">
+          <span class="card-status card-status--planned">Planned</span>
+          <h3>OptiBizIQ — POS Analytics Pipeline</h3>
+          <p>
+            Square POS data → Python analytics → OpenAI-generated daily
+            business summary → Telegram delivery. Real production use case.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Python</span>
+            <span class="tag">OpenAI</span>
+            <span class="tag">Square API</span>
+            <span class="tag">Telegram</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;">Coming soon</span>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Nurudeen Adeyemi ·
+      <a href="https://github.com/Lanruchi" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
