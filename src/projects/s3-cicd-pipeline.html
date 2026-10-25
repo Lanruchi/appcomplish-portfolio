@@ -157,7 +157,7 @@
       <h2>Alternatives and Cost</h2>
       <div class="cost-headline">
         <span class="cost-figure">$0</span>
-        <span class="cost-caption">a month for the pipeline (estimate). An EC2-based deploy would cost roughly $10 a month plus patching.</span>
+        <span class="cost-caption">a month for the pipeline (estimate). An EC2-based deploy would cost roughly $8 a month (a t3.micro instance alone is about $7.60) plus patching.</span>
       </div>
       <div class="table-wrap">
         <table class="cost-table">
@@ -168,8 +168,8 @@
             <tr><td>Manual console upload</td><td>No history; easy to forget or mistype.</td><td>$0</td></tr>
             <tr class="is-best"><td>GitHub Actions + OIDC role <span class="pill pill--decided">Best fit</span></td><td>Short-lived login, nothing stored, every run logged.</td><td>$0 (free for public repos)</td></tr>
             <tr><td>GitHub Actions + access keys</td><td>A long-lived key in GitHub secrets can leak.</td><td>$0</td></tr>
-            <tr><td>AWS CodePipeline + CodeBuild</td><td>Stays in AWS, but more services to set up.</td><td>About $1 or more</td></tr>
-            <tr><td>EC2 + Secure Shell (SSH) and rsync (a file-copy tool)</td><td>Right for dynamic sites. For static files it only adds a server to patch and a key to guard.</td><td>About $10 or more</td></tr>
+            <tr><td>AWS CodePipeline + CodeBuild</td><td>Stays in AWS, but more services to set up.</td><td>$0–1 for the pipeline (first V1 pipeline free), plus build minutes</td></tr>
+            <tr><td>EC2 + Secure Shell (SSH) and rsync (a file-copy tool)</td><td>Right for dynamic sites. For static files it only adds a server to patch and a key to guard.</td><td>About $8 or more</td></tr>
             <tr><td>AWS Amplify Hosting</td><td>Easiest, but hides the pieces I wanted to learn.</td><td>Low, usage-based</td></tr>
           </tbody>
         </table>
@@ -178,7 +178,7 @@
         Cost is not what decides this; security and simplicity are. For a static website, EC2
         costs real money and upkeep for no benefit. For a dynamic app it would be a candidate.
         Sources:
-        <a href="https://github.com/pricing" target="_blank" rel="noopener">GitHub Actions</a> ·
+        <a href="https://docs.github.com/en/billing/concepts/product-billing/github-actions" target="_blank" rel="noopener">GitHub Actions</a> ·
         <a href="https://aws.amazon.com/codepipeline/pricing/" target="_blank" rel="noopener">CodePipeline</a> ·
         <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a> ·
         <a href="https://aws.amazon.com/amplify/pricing/" target="_blank" rel="noopener">Amplify</a> ·

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f172a" />
   <title>S3 Static Website Hosting — Nurudeen Adeniyi</title>
-  <meta name="description" content="Case study: hosting a static portfolio website on Amazon S3 with Route 53, then adding CloudFront, ACM and WAF. Decisions, cost and tradeoffs, including when EC2 would be the better choice." />
+  <meta name="description" content="Case study: hosting a static portfolio website on Amazon S3 with Route 53, then adding CloudFront and ACM. Decisions, cost and tradeoffs, including when EC2 would be the better choice." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -67,9 +67,9 @@
       <dl class="glance">
         <div><dt>Goal</dt><dd>Host my portfolio on AWS with no servers</dd></div>
         <div><dt>Key decision</dt><dd>Static hosting on an Amazon S3 bucket instead of a server</dd></div>
-        <div><dt>Stack</dt><dd>Amazon S3 bucket, Route 53 (planned: CloudFront, AWS Certificate Manager (ACM), AWS Web Application Firewall (WAF))</dd></div>
+        <div><dt>Stack</dt><dd>Amazon S3 bucket, Route 53 (planned: CloudFront and AWS Certificate Manager (ACM))</dd></div>
         <div><dt>Who</dt><dd>Recruiters and hiring managers using a browser</dd></div>
-        <div><dt>Monthly cost</dt><dd>Under $1 (WAF would add about $6–8)</dd></div>
+        <div><dt>Monthly cost</dt><dd>Under $1 (CloudFront's Free plan is $0)</dd></div>
         <div><dt>Status</dt><dd>Phase 1 live, Phase 2 in progress</dd></div>
       </dl>
 
@@ -78,9 +78,9 @@
         <div class="callout-label">Summary</div>
         This portfolio is a static website: HTML, CSS and JavaScript files with no server-side
         code. I host it in an Amazon S3 bucket behind a Route 53 Domain Name System (DNS) record, so there is nothing
-        to patch and it costs under $1 a month. Next I'm adding CloudFront and an ACM
-        certificate for HTTPS and a private bucket. WAF would cost more than everything else
-        combined, so I'm holding it back until the site needs it.
+        to patch and it costs under $1 a month. Next I'm adding CloudFront on its $0 Free plan and an ACM
+        certificate for HTTPS and a private bucket. I'm skipping a separately billed AWS Web Application Firewall (WAF), because a static
+        site has little to filter.
       </div>
 
       <!-- 4. Figure -->
@@ -161,7 +161,7 @@
       <h2>Alternatives and Cost</h2>
       <div class="cost-headline">
         <span class="cost-figure">Under $1</span>
-        <span class="cost-caption">a month with S3, Route 53 and CloudFront (estimate). WAF would add about $6–8.</span>
+        <span class="cost-caption">a month with S3, Route 53 and CloudFront's $0 Free plan (estimate). The plan covers up to 1M requests and 100 GB of data transfer a month.</span>
       </div>
       <div class="table-wrap">
         <table class="cost-table">
@@ -170,22 +170,23 @@
           </thead>
           <tbody>
             <tr><td>S3 website endpoint only (Phase 1)</td><td>Simplest, but one region, no edge cache, HTTP only, public bucket.</td><td>Under $1</td></tr>
-            <tr class="is-best"><td>S3 + CloudFront + ACM (Phase 2) <span class="pill pill--decided">Best fit</span></td><td>Adds HTTPS, edge caching and a private bucket. CloudFront's free tier covers this traffic and ACM public certificates are free.</td><td>Under $1</td></tr>
-            <tr><td>S3 + CloudFront + ACM + WAF</td><td>Adds request filtering, but a site with no login or form gains little.</td><td>About $6–8</td></tr>
-            <tr><td>EC2 or Lightsail + Nginx</td><td>Right for a dynamic site. For static files it adds a server to patch.</td><td>About $5–10</td></tr>
+            <tr class="is-best"><td>S3 + CloudFront + ACM (Phase 2) <span class="pill pill--decided">Best fit</span></td><td>Adds HTTPS, edge caching and a private bucket. CloudFront's $0 Free plan covers this traffic and ACM public certificates are free.</td><td>Under $1</td></tr>
+            <tr><td>S3 + CloudFront + ACM + separate AWS WAF</td><td>Adds request filtering for monthly fees plus $0.60 per million requests, but a site with no login or form gains little.</td><td>Billed separately, see pricing</td></tr>
+            <tr><td>EC2 or Lightsail + Nginx</td><td>Right for a dynamic site. For static files it adds a server to patch.</td><td>About $5–12</td></tr>
             <tr><td>Vercel, Netlify or AWS Amplify</td><td>Faster to set up, but hides the AWS pieces I want to learn.</td><td>Free or low</td></tr>
           </tbody>
         </table>
       </div>
       <p>
-        CloudFront is effectively free at this scale, so adding it is about HTTPS, caching and a
-        private bucket, not money. WAF is the opposite: it would cost more than everything else
-        combined, so it is the first thing to question.
+        CloudFront's Free plan costs $0 at this scale, so adding it is about HTTPS, caching and a
+        private bucket, not money. A separately billed WAF is the opposite: it adds monthly fees on
+        top of everything else, so it is the first thing to question.
         Sources:
         <a href="https://aws.amazon.com/s3/pricing/" target="_blank" rel="noopener">S3</a> ·
         <a href="https://aws.amazon.com/cloudfront/pricing/" target="_blank" rel="noopener">CloudFront</a> ·
         <a href="https://aws.amazon.com/waf/pricing/" target="_blank" rel="noopener">WAF</a> ·
         <a href="https://aws.amazon.com/lightsail/pricing/" target="_blank" rel="noopener">Lightsail</a> ·
+        <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a> ·
         <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
       </p>
       </section>
@@ -203,7 +204,7 @@
             <tr><td>Security</td><td>Phase 1: public read-only bucket over HTTP. Phase 2: HTTPS and a private bucket.</td><td><span class="pill pill--planned">Planned</span></td></tr>
             <tr><td>Observability</td><td>Access logs and alarms are not set up yet.</td><td><span class="pill pill--na">Not available yet</span></td></tr>
             <tr><td>Deployment &amp; DevOps</td><td>GitHub Actions deploys on merge (see the <a href="s3-cicd-pipeline.html">CI/CD case study</a>). Terraform is next.</td><td><span class="pill pill--decided">Decided</span></td></tr>
-            <tr><td>Cost &amp; trade-offs</td><td>Under $1 a month except WAF; see <a href="#cost">Alternatives and Cost</a>.</td><td><span class="pill pill--decided">Decided</span></td></tr>
+            <tr><td>Cost &amp; trade-offs</td><td>Under $1 a month; a separate WAF would add fees; see <a href="#cost">Alternatives and Cost</a>.</td><td><span class="pill pill--decided">Decided</span></td></tr>
           </tbody>
         </table>
       </div>
