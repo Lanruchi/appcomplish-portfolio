@@ -23,7 +23,9 @@ appcomplish-portfolio/
 │   └── agents/                        # Sub-agent definitions (optional)
 │
 ├── .github/
-│   └── pull_request_template.md       # PR description template
+│   ├── pull_request_template.md       # PR description template
+│   └── workflows/
+│       └── deploy.yml                 # Sync src/ to S3 on push to main
 ├── .gitignore                         # Ignores .env, settings.local.json, OS files
 ├── .env.example                       # Committed env template (empty values only)
 │
@@ -54,7 +56,8 @@ appcomplish-portfolio/
     ├── system-design-concepts.md      # Condensed cheat sheet read by /concepts
     ├── templates/
     │   └── project-case-study.html    # Case study template (outside src/, never deployed)
-    └── build-and-test.md              # Run, pre-upload checklist, deploy
+    ├── build-and-test.md              # Run, pre-upload checklist, deploy
+    └── aws-deploy-setup.md            # One-time OIDC role + GitHub environment setup
 ```
 
 ---
@@ -80,6 +83,7 @@ appcomplish-portfolio/
 | Architecture diagram (image) | `src/assets/images/projects/<slug>/`         | PNG or SVG; referenced by case study HTML  |
 | Other shared images          | `src/assets/images/`                         | Favicons, hero images, profile photo       |
 | PR template                  | `.github/pull_request_template.md`           | Pre-fills PR descriptions                  |
+| CI/CD workflow               | `.github/workflows/*.yml`                    | One file per pipeline                      |
 | Secrets template             | `.env.example`                               | Committed, empty values; `.env` gitignored |
 | Project docs / references    | `docs/`                                      | Outside `src/`, never deployed       |
 

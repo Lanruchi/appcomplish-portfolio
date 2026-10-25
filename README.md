@@ -57,19 +57,8 @@ Only the landing page is named `index.html`; every other page has a descriptive 
 
 ---
 
-## Deploying to S3 (manual for now)
+## Deploying to S3
 
-No CLI, Terraform, or CI/CD is wired up yet. To publish:
+Pushes to `main` that change `src/` deploy automatically via GitHub Actions (`.github/workflows/deploy.yml`), which syncs `src/` to the `appcomplish.click` bucket. GitHub signs in to AWS with an OIDC role, so no AWS keys are stored anywhere. Setup steps are in `docs/aws-deploy-setup.md`.
 
-1. Open the S3 bucket in the AWS console.
-2. Upload the **contents** of `src/` (keep the folder structure), overwriting existing files.
-
-Later steps, as the bootcamp progresses: `aws s3 sync src/ s3://<bucket> --delete`, then Terraform for the stack, then GitHub Actions for automatic deploys.
-
----
-
-## Planned Projects
-
-- [ ] S3 Static Website — Phase 2: CloudFront + ACM + WAF
-- [ ] Terraform: provision the full stack as IaC
-- [ ] CI/CD: GitHub Actions → S3 sync + CloudFront invalidation
+Manual run: Actions → **Deploy to S3** → Run workflow (dry run is on by default).

@@ -1,0 +1,41 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", ".github/workflows/deploy.yml"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (show what would change, upload nothing)"
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write # request the OIDC token used to assume the AWS role
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Safety switch: pushes only deploy when the repo variable AUTO_DEPLOY is "true".
+    # The manual "Run workflow" button always works (and defaults to a dry run).
+    if: github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync src/ to S3
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '--dryrun' || '' }}
+        run: aws s3 sync src/ "s3://${{ vars.S3_BUCKET }}" --delete $DRY_RUN
