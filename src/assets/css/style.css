@@ -569,6 +569,8 @@ a:hover { text-decoration: underline; }
 }
 .cert-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
 .cert-card p  { font-size: 0.8rem; color: var(--text-muted); }
+.cert-card h3 a { color: inherit; text-decoration: underline; text-decoration-color: var(--border); }
+.cert-card h3 a:hover, .cert-card h3 a:focus-visible { color: var(--accent); text-decoration-color: var(--accent); }
 .resume-cta {
   display: inline-flex;
   align-items: center;
