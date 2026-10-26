@@ -3,14 +3,17 @@
   PROJECT CASE STUDY TEMPLATE  (copy to src/projects/<project-slug>.html)
 
   Models to match: src/projects/s3-static-website.html and src/projects/s3-cicd-pipeline.html.
-  Ten sections, about 700-900 words total. Every section is REQUIRED.
+  Five parts, about 600-800 words total: Business Requirement, At a glance, Figure, Problems I Hit and How I
+  Fixed Them (omit when nothing went wrong), Design Considerations. Standard: docs/conventions.md.
   "Not available" is fine for a value you cannot find; "n/a — reason" is fine for a table row that does not apply.
-  Every `TODO:` must be replaced. /review blocks pages that still contain "TODO:" or "Placeholder".
+  Every `TODO:` must be replaced. /review blocks pages that still contain "TODO:" or "Placeholder"
+  (a deliberate "coming soon" architecture-image slot is allowed).
 
   WRITING: be explicit ("Amazon S3 bucket", not "bucket"; spell out acronyms once, diagram labels may use acronyms
-  defined in the figure's aria-label or caption); say WHY in captions and decisions; state the scope
-  (static vs dynamic, small vs large) and when a different choice (EC2, containers) would fit better.
-  BREVITY: no prose block over ~100 words when a table or bullets would do. No empty "coming soon" sections.
+  defined in the figure's aria-label or caption); say WHY in captions and decisions; plain language a beginner can
+  follow; state only what was built, seen or sourced (no hypotheticals, no non-AWS comparisons); mask account and
+  repository ID numbers as xxxxxxx; state each fact once.
+  BREVITY: no prose block over ~100 words when a table or bullets would do.
   PRICES: link every figure to an AWS pricing page or https://calculator.aws/.
 -->
 <html lang="en">
@@ -60,82 +63,51 @@
   <article class="article-body">
     <div class="container--narrow">
 
-      <!-- 1. BUSINESS REQUIREMENT: 2-sentence scenario and the design question. No bullets (the Requirements table covers them). -->
+      <!-- 1. BUSINESS REQUIREMENT: the need, why now and the requirements in one short paragraph, then the design question. No bullets. -->
       <div class="callout">
         <div class="callout-label">Business Requirement</div>
-        <p>TODO: who needs what and why now, in two sentences. State if the workload is static or dynamic.</p>
+        <p>TODO: who needs what and why now, plus the requirements it must meet (own domain, no stored keys, low cost...).</p>
         <p><strong>TODO: the design question, e.g. "How would you host a portfolio website like this?"</strong></p>
       </div>
 
-      <!-- 2. AT A GLANCE: Goal, Key decision, Stack, Who (people or machine callers), Monthly cost, Status. Where/When fit in Stack/Status. -->
+      <!-- 2. AT A GLANCE: Key decision, Stack (include region), Monthly cost (estimate), Status. CI/CD pages add a Source row linking the workflow file on GitHub. -->
       <dl class="glance">
-        <div><dt>Goal</dt><dd>TODO</dd></div>
         <div><dt>Key decision</dt><dd>TODO</dd></div>
         <div><dt>Stack</dt><dd>TODO (include region)</dd></div>
-        <div><dt>Who</dt><dd>TODO</dd></div>
         <div><dt>Monthly cost</dt><dd>TODO (estimate)</dd></div>
         <div><dt>Status</dt><dd>TODO</dd></div>
       </dl>
 
-      <!-- 3. SUMMARY: about 50 words — what it is, the key decision, the cost, what is next. -->
-      <div class="callout">
-        <div class="callout-label">Summary</div>
-        TODO
-      </div>
-
-      <!-- 4. FIGURE: diagram (inline SVG with aria-label that defines acronyms, or an <img> with alt). Caption says WHY it fits and when another design would. -->
+      <!-- 3. FIGURE: one diagram (inline SVG with an aria-label that defines acronyms, or an <img> with alt) and a short caption that says WHY it fits.
+           Optional Proof line after the caption: a command, test or result that shows it works.
+           Pages that will get an architecture image keep the slot below until it exists, then replace the slot div with an <img> from
+           src/assets/images/projects/<slug>/. CI/CD pages have no architecture slot: delete the first diagram-box. -->
       <div class="diagram-box">
-        <img src="../assets/images/projects/TODO-slug/architecture.png" alt="TODO: describe the architecture" />
+        <div class="diagram-slot" role="img" aria-label="AWS architecture diagram, not drawn yet">AWS architecture diagram: coming soon</div>
       </div>
-      <p class="diagram-caption">TODO: Figure 1 — why this design fits this workload, and when a different one (EC2, containers) would fit better. Two sentences.</p>
-
-      <!-- 5. REQUIREMENTS: measurable targets with status (Met / Planned / Not tested yet). -->
-      <h2>Requirements</h2>
-      <div class="table-wrap">
-        <table class="cost-table">
-          <thead><tr><th>Requirement</th><th>Target</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>TODO</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 6. HOW IT WORKS: 3-5 numbered steps, one "Proof" line, then the Key Decision callout. -->
-      <h2>How It Works</h2>
-      <ol>
-        <li>TODO</li>
-      </ol>
+      <p class="diagram-caption">TODO: Figure 1 — what the diagram shows and why this design fits. State only what was built.</p>
       <p><strong>Proof:</strong> TODO — a command, test or result that shows it works.</p>
-      <div class="callout">
-        <div class="callout-label">Key Decision</div>
-        TODO: the choice that shaped everything, and why.
+
+      <!-- 4. PROBLEMS: real problems only. For each one a red callout (Trying to, What happened, Why) then a green Fix callout with numbered
+           steps that name where to click (Console → Service → Page → Button). Mask ID numbers as xxxxxxx. Delete this whole section if nothing went wrong; do not invent. -->
+      <h2>Problems I Hit and How I Fixed Them</h2>
+      <div class="callout callout--problem">
+        <div class="callout-label">Problem 1</div>
+        <p><strong>TODO: a plain headline</strong><br />
+          <strong>Trying to:</strong> TODO what you were doing and why.<br />
+          <strong>What happened:</strong> TODO the error or symptom, with the exact error text if there was one.<br />
+          <strong>Why:</strong> TODO the cause in everyday words.</p>
+      </div>
+      <div class="callout callout--fix">
+        <div class="callout-label">Fix</div>
+        <ol>
+          <li>TODO: <strong>Service</strong> → <strong>Page</strong> → <strong>Button</strong>.</li>
+        </ol>
       </div>
 
-      <!-- 7. ALTERNATIVES AND COST: highlighted block, one table (option, why or why not, monthly estimate), 2 sentences, source links. -->
-      <section class="cost-section" id="cost">
-      <h2>Alternatives and Cost</h2>
-      <div class="cost-headline">
-        <span class="cost-figure">TODO: $X</span>
-        <span class="cost-caption">TODO: per month, for which option (estimate), and the biggest cost driver.</span>
-      </div>
-      <div class="table-wrap">
-        <table class="cost-table">
-          <thead><tr><th>Option</th><th>Why or why not</th><th>Estimated monthly</th></tr></thead>
-          <tbody>
-            <tr><td>TODO: Option A</td><td>TODO</td><td>TODO</td></tr>
-            <tr class="is-best"><td>TODO: Option B <span class="pill pill--decided">Best fit</span></td><td>TODO</td><td>TODO</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>
-        TODO: what decides it, and when the other option would win.
-        Sources:
-        <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener">AWS pricing</a> ·
-        <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
-      </p>
-      </section>
-
-      <!-- 8. DESIGN CONSIDERATIONS: the 8 Core categories from docs/system-design-concepts.md; each row 12 words or fewer. Run /concepts <slug>. -->
+      <!-- 5. DESIGN CONSIDERATIONS: the 8 Core categories from docs/system-design-concepts.md. Run /concepts <slug>.
+           Status: Addressed, Partly addressed, Not addressed yet, or n/a (reason in the Decision). The Cost row holds the estimate,
+           the rejected AWS options and the pricing links. State only what was built, seen or sourced. -->
       <h2>Design Considerations</h2>
       <div class="table-wrap">
         <table class="cost-table design-table">
@@ -148,22 +120,12 @@
             <tr><td>Security</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
             <tr><td>Observability</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
             <tr><td>Deployment &amp; DevOps</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
-            <tr><td>Cost &amp; trade-offs</td><td>TODO</td><td><span class="pill pill--na">TODO</span></td></tr>
+            <tr class="is-best"><td>Cost &amp; trade-offs</td><td>TODO: estimate per month and for which setup; rejected AWS options with estimates. Sources:
+              <a href="https://aws.amazon.com/pricing/" target="_blank" rel="noopener">AWS pricing</a> ·
+              <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a></td><td><span class="pill pill--na">TODO</span></td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- 9. PROBLEMS I SOLVED: real problems only (error, cause, fix), 2-3 bullets. Delete this section only if nothing went wrong; do not invent. -->
-      <h2>Problems I Solved</h2>
-      <ul>
-        <li><strong>TODO: error or symptom</strong> — cause and fix in one or two sentences.</li>
-      </ul>
-
-      <!-- 10. LIMITS AND NEXT STEPS: tradeoffs, what breaks at 10x scale, what I would do differently, what is next. 3-5 one-line bullets. -->
-      <h2>Limits and Next Steps</h2>
-      <ul>
-        <li><strong>TODO:</strong> one line.</li>
-      </ul>
 
     </div>
   </article>
