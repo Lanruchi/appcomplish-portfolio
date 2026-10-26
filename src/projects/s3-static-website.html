@@ -40,10 +40,10 @@
         <span class="tag">CloudFront</span>
         <span class="tag">ACM</span>
       </div>
-      <span class="card-status card-status--wip">In Progress</span>
+      <span class="card-status card-status--built">Built</span>
       <h1>S3 Static Website Hosting</h1>
       <div class="article-meta">
-        <span>Started: October 2026</span>
+        <span>Built: October 2026</span>
         <span>·</span>
         <span>Bootcamp: AWS Solutions Architect</span>
       </div>
@@ -226,9 +226,10 @@
             <tr><td>Security</td><td>HTTPS through ACM (the certificate must be created in <code>us-east-1</code>); private bucket via OAC. See <a href="#problems">above</a>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Observability</td><td>Access logs and alarms are not set up yet.</td><td><span class="pill pill--na">Not addressed yet</span></td></tr>
             <tr><td>Deployment &amp; DevOps</td><td>GitHub Actions deploys on merge (<a href="s3-cicd-pipeline.html">CI/CD case study</a>). Next time I would start with Terraform.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
-            <tr class="is-best"><td>Cost &amp; trade-offs</td><td>Under $1 a month with S3, Route 53 and CloudFront's Free plan (estimate). Rejected: EC2 or Lightsail, about $5–12 plus patching; AWS Amplify Hosting, which hides the AWS pieces I want to learn; a separate AWS Web Application Firewall (WAF), which adds fees a static site does not need. Sources:
+            <tr class="is-best"><td>Cost &amp; trade-offs</td><td>Under $1 a month in total (estimate): S3, Route 53, and CloudFront's Free plan, which costs $0 a month. Rejected: EC2 or Lightsail, about $5–12 plus patching; AWS Amplify Hosting, which hides the AWS pieces I want to learn; a separate AWS Web Application Firewall (WAF), which adds fees a static site does not need. Sources:
               <a href="https://aws.amazon.com/s3/pricing/" target="_blank" rel="noopener">S3</a> ·
               <a href="https://aws.amazon.com/cloudfront/pricing/" target="_blank" rel="noopener">CloudFront</a> ·
+              <a href="https://aws.amazon.com/route53/pricing/" target="_blank" rel="noopener">Route 53</a> ·
               <a href="https://aws.amazon.com/waf/pricing/" target="_blank" rel="noopener">WAF</a> ·
               <a href="https://aws.amazon.com/lightsail/pricing/" target="_blank" rel="noopener">Lightsail</a> ·
               <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a></td><td><span class="pill pill--decided">Addressed</span></td></tr>
