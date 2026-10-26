@@ -115,7 +115,7 @@
 
       <!-- 4. Problems -->
       <h2 id="problems">Problems I Hit and How I Fixed Them</h2>
-      <p>My workflow has to log in to AWS and copy the website files into the S3 bucket. Two things failed on the way.</p>
+      <p>My workflow has to log in to AWS and copy the website files into the S3 bucket. Three things went wrong on the way.</p>
 
       <div class="callout callout--problem">
         <div class="callout-label">Problem 1</div>
@@ -156,6 +156,26 @@
         </ol>
       </div>
 
+      <div class="callout callout--problem">
+        <div class="callout-label">Problem 3</div>
+        <p><strong>Merged changes did not show on the live site</strong><br />
+          <strong>Trying to:</strong> see the changes from a merged pull request on the live website.<br />
+          <strong>What happened:</strong> the deploy succeeded, but the site still showed the old pages, even in a
+          private browser window. The response header said <code>X-Cache: Hit from cloudfront</code>.<br />
+          <strong>Why:</strong> Amazon CloudFront keeps cached copies of each page. My deploy only copied files to S3,
+          and nothing told CloudFront that they had changed, so it kept serving its old copies.</p>
+      </div>
+      <div class="callout callout--fix">
+        <div class="callout-label">Fix</div>
+        <ol>
+          <li><strong>CloudFront</strong> → <strong>Distributions</strong> → copy the distribution <strong>ID</strong>.</li>
+          <li><strong>AWS IAM</strong> → <strong>Roles</strong> → my deploy role → <strong>Add permissions</strong> → <strong>Create inline policy</strong>: allow <code>cloudfront:CreateInvalidation</code> on that one distribution.</li>
+          <li><strong>GitHub</strong> → <strong>Settings</strong> → <strong>Environments</strong> → <code>production</code> → <strong>Variables</strong>: add <code>CLOUDFRONT_DISTRIBUTION_ID</code>.</li>
+          <li>Add a workflow step after the S3 sync that runs <code>aws cloudfront create-invalidation --paths "/*"</code>. It is skipped on a dry run.</li>
+          <li>Merge. The step turned green, and the live pages then returned <code>X-Cache: Miss</code>, meaning CloudFront fetched fresh copies.</li>
+        </ol>
+      </div>
+
       <!-- 5. Design Considerations (includes cost) -->
       <h2>Design Considerations</h2>
       <div class="table-wrap">
@@ -166,9 +186,9 @@
             <tr><td>Scalability &amp; performance</td><td>One deploy at a time. <code>aws s3 sync</code> re-uploads every file on each run, which is fine for a small site.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Availability &amp; fault tolerance</td><td>The site keeps serving if the pipeline is down, and a repository variable pauses deploys. Rolling back by reverting the commit is untested. The pipeline depends on GitHub.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
             <tr><td>Data &amp; consistency</td><td>n/a — static files only; Git is the source of truth.</td><td><span class="pill pill--na">n/a</span></td></tr>
-            <tr><td>Security</td><td>An OIDC role instead of stored keys: a leaked key works until someone notices, while an OIDC login expires in about an hour. The role trusts only this repository, the <code>production</code> environment and <code>main</code>, and reaches one bucket.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Security</td><td>An OIDC role instead of stored keys: a leaked key works until someone notices, while an OIDC login expires in about an hour. The role trusts only this repository, the <code>production</code> environment and <code>main</code>, and reaches one bucket. It can also clear the cache of one CloudFront distribution.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Observability</td><td>Each run logs every upload and delete. Failure alerts are missing.</td><td><span class="pill pill--na">Not addressed yet</span></td></tr>
-            <tr><td>Deployment &amp; DevOps</td><td>Dry run, real run, then auto-deploy. <code>--delete</code> removes anything not in Git, and no link check runs first. The role was made by hand. Next: Terraform, pin actions to commit SHAs with Dependabot, a link check, and clearing the CloudFront cache after a deploy.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
+            <tr><td>Deployment &amp; DevOps</td><td>Dry run, real run, then auto-deploy. <code>--delete</code> removes anything not in Git, and no link check runs first. The role was made by hand. Next: Terraform, pin actions to commit SHAs with Dependabot, and a link check. Each real deploy clears the CloudFront cache.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
             <tr class="is-best"><td>Cost &amp; trade-offs</td><td>$0 for the pipeline (estimate); GitHub Actions is free for public repositories. Rejected: stored access keys, because a long-lived key can leak; AWS CodePipeline and CodeBuild, $0–1 plus build minutes and more services to set up; EC2 with SSH, about $8 or more and a server to patch for static files; AWS Amplify Hosting, which hides the pieces I wanted to learn. Sources:
               <a href="https://docs.github.com/en/billing/concepts/product-billing/github-actions" target="_blank" rel="noopener">GitHub Actions</a> ·
               <a href="https://aws.amazon.com/codepipeline/pricing/" target="_blank" rel="noopener">CodePipeline</a> ·
