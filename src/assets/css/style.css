@@ -613,6 +613,13 @@ footer a:hover { color: var(--accent); }
   border: 2px solid var(--border);
   margin-bottom: 1rem;
 }
+.hero-open {
+  margin-top: 1rem;
+  max-width: 640px;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.hero-open strong { color: var(--accent); }
 .hero-proof {
   list-style: none;
   margin: 1.25rem 0 0;
