@@ -57,35 +57,25 @@
       <div class="callout">
         <div class="callout-label">Business Requirement</div>
         <p>
-          I update this portfolio often while I learn, and uploading files by hand in the AWS
-          console is slow, easy to forget and leaves no record. I want every approved change to
-          go live automatically (CI/CD, short for continuous integration and continuous
-          delivery) without storing AWS keys anywhere they could leak.
+          I update this portfolio often while I learn, and uploading files by hand in the AWS console
+          is slow, easy to forget and leaves no record. Every approved change must go live
+          automatically (CI/CD, short for continuous integration and continuous delivery), with no AWS
+          keys stored where they could leak, a preview before anything changes, and access limited to
+          one bucket.
         </p>
         <p><strong>How would you deploy a static website like this?</strong></p>
       </div>
 
       <!-- 2. At a glance -->
       <dl class="glance">
-        <div><dt>Goal</dt><dd>Publish static-website changes automatically and safely</dd></div>
         <div><dt>Key decision</dt><dd>OpenID Connect (OIDC) role in AWS Identity and Access Management (IAM), no stored keys</dd></div>
         <div><dt>Stack</dt><dd>GitHub Actions, AWS IAM, Amazon S3 bucket in us-east-1</dd></div>
-        <div><dt>Who</dt><dd>Me, the only maintainer, and the workflow calling AWS</dd></div>
         <div><dt>Monthly cost</dt><dd>$0 for the pipeline (estimate)</dd></div>
         <div><dt>Status</dt><dd>Live, auto-deploy on</dd></div>
+        <div><dt>Source</dt><dd><a href="https://github.com/nuru-adeniyi/appcomplish-portfolio/blob/main/.github/workflows/deploy.yml" target="_blank" rel="noopener">deploy.yml</a> in the <a href="https://github.com/nuru-adeniyi/appcomplish-portfolio" target="_blank" rel="noopener">appcomplish-portfolio</a> repository on GitHub</dd></div>
       </dl>
 
-      <!-- 3. Summary -->
-      <div class="callout">
-        <div class="callout-label">Summary</div>
-        A merge to <code>main</code> deploys this static website to an Amazon S3 bucket through
-        GitHub Actions. The workflow logs in to AWS with OIDC, so no AWS access keys are stored.
-        It costs nothing, previews changes with a dry run, and can be paused with one variable.
-        For a static website this beats Amazon Elastic Compute Cloud (EC2) virtual servers,
-        CodePipeline and stored keys; a dynamic app would change that answer.
-      </div>
-
-      <!-- 4. Figure -->
+      <!-- 3. Figure -->
       <div class="diagram-box">
         <svg viewBox="0 0 760 170" role="img" aria-label="Pipeline: a merge to main starts a GitHub Actions job. The job gets a signed token (OpenID Connect, OIDC). AWS Security Token Service (STS) checks the token against an IAM role and issues temporary keys. The job then copies the src folder into the Amazon S3 bucket." style="width:100%;height:auto;">
           <defs>
@@ -120,108 +110,73 @@
           </g>
         </svg>
       </div>
-      <p class="diagram-caption">Figure 1 — Why this works for a static website: it is only files, so one copy command is the whole deploy and no server has to be started. A dynamic app (server-side code, a database) would need a pipeline that builds and releases an application, often onto Amazon Elastic Compute Cloud (EC2) virtual servers or containers.</p>
+      <p class="diagram-caption">Figure 1 — The five steps of a deploy. The site is only files, so one copy command is the whole deploy.</p>
+      <p><strong>Proof:</strong> the dry run (a practice run that only lists changes) listed 10 uploads and 1 delete (an old sample page). After the real run, the main pages and the stylesheet returned 200 and the deleted page returned 404.</p>
 
-      <!-- 5. Requirements -->
-      <h2>Requirements</h2>
-      <div class="table-wrap">
-        <table class="cost-table">
-          <thead><tr><th>Requirement</th><th>Target</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Deploy on merge</td><td>Push to <code>main</code> publishes <code>src/</code></td><td><span class="pill pill--decided">Met</span></td></tr>
-            <tr><td>No stored AWS keys</td><td>Short-lived credentials via OIDC</td><td><span class="pill pill--decided">Met</span></td></tr>
-            <tr><td>Preview before changing</td><td>Dry run lists every upload and delete</td><td><span class="pill pill--decided">Met</span></td></tr>
-            <tr><td>Least privilege</td><td>IAM role limited to one S3 bucket</td><td><span class="pill pill--decided">Met</span></td></tr>
-            <tr><td>Pause and audit</td><td>Off switch, one log per run</td><td><span class="pill pill--decided">Met</span></td></tr>
-            <tr><td>Fast rollback</td><td>Revert the commit and redeploy</td><td><span class="pill pill--na">Not tested yet</span></td></tr>
-          </tbody>
-        </table>
+      <!-- 4. Problems -->
+      <h2 id="problems">Problems I Hit and How I Fixed Them</h2>
+      <p>My workflow has to log in to AWS and copy the website files into the S3 bucket. Two things failed on the way.</p>
+
+      <div class="callout callout--problem">
+        <div class="callout-label">Problem 1</div>
+        <p><strong>GitHub could not log in to AWS</strong><br />
+          <strong>Trying to:</strong> let the workflow log in to AWS without storing any AWS keys. GitHub sends a
+          signed token that names my repository, and the IAM role's <strong>trust policy</strong> (its list of who
+          may use it) says which names it accepts.<br />
+          <strong>What happened:</strong> the run failed with <code>Not authorized to perform sts:AssumeRoleWithWebIdentity</code>.<br />
+          <strong>Why:</strong> the <code>sub</code> (subject) line in my trust policy used the plain name,
+          <code>repo:nuru-adeniyi/appcomplish-portfolio:environment:production</code>. GitHub was sending the name
+          plus ID numbers, <code>repo:nuru-adeniyi@xxxxxxx/appcomplish-portfolio@xxxxxxx:environment:production</code>.
+          They did not match, so AWS refused.</p>
+      </div>
+      <div class="callout callout--fix">
+        <div class="callout-label">Fix</div>
+        <ol>
+          <li>Find what GitHub actually sent. <strong>AWS CloudTrail</strong> → <strong>Event history</strong> → filter
+            <strong>Event name</strong> = <code>AssumeRoleWithWebIdentity</code> (region <code>us-east-1</code>) → open the
+            failed event → read <code>userIdentity</code> → <code>userName</code>. That is the <code>sub</code> line GitHub
+            sent: <code>repo:nuru-adeniyi@xxxxxxx/appcomplish-portfolio@xxxxxxx:environment:production</code>.</li>
+          <li><strong>AWS IAM</strong> → <strong>Roles</strong> → my deploy role → <strong>Trust relationships</strong> → <strong>Edit</strong>.</li>
+          <li>In the <code>sub</code> line, replace the plain name with exactly what GitHub sends.</li>
+        </ol>
       </div>
 
-      <!-- 6. How it works -->
-      <h2>How It Works</h2>
-      <ol>
-        <li>A pull request changing <code>src/</code> merges into <code>main</code>.</li>
-        <li>The workflow starts in the <code>production</code> GitHub environment, which only allows <code>main</code>.</li>
-        <li>GitHub issues a signed token naming the repository and environment.</li>
-        <li>AWS Security Token Service (STS) checks it against the IAM role's trust policy and returns temporary credentials.</li>
-        <li><code>aws s3 sync src/ --delete</code> makes the S3 bucket match the <code>src/</code> folder.</li>
-      </ol>
-      <div class="callout">
-        <div class="callout-label">Key Decision</div>
-        An OIDC IAM role over stored AWS access keys. A leaked key works until someone notices;
-        an OIDC login expires in about an hour and only works for this repository.
+      <div class="callout callout--problem">
+        <div class="callout-label">Problem 2</div>
+        <p><strong>The login worked, but AWS refused to touch the bucket</strong><br />
+          <strong>Trying to:</strong> copy the website files into the S3 bucket, now that the login worked.<br />
+          <strong>What happened:</strong> the run failed with <code>no identity-based policy allows s3:ListBucket</code>.<br />
+          <strong>Why:</strong> a new IAM role can do nothing until it is given permissions.</p>
+      </div>
+      <div class="callout callout--fix">
+        <div class="callout-label">Fix</div>
+        <ol>
+          <li><strong>AWS IAM</strong> → <strong>Roles</strong> → my deploy role → <strong>Add permissions</strong> → <strong>Create inline policy</strong>.</li>
+          <li>Allow it to list, add and delete files in this one bucket only.</li>
+        </ol>
       </div>
 
-      <!-- 7. Alternatives and cost -->
-      <section class="cost-section" id="cost">
-      <h2>Alternatives and Cost</h2>
-      <div class="cost-headline">
-        <span class="cost-figure">$0</span>
-        <span class="cost-caption">a month for the pipeline (estimate). An EC2-based deploy would cost roughly $8 a month (a t3.micro instance alone is about $7.60) plus patching.</span>
-      </div>
-      <div class="table-wrap">
-        <table class="cost-table">
-          <thead>
-            <tr><th>Option</th><th>Why or why not</th><th>Estimated monthly</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Manual console upload</td><td>No history; easy to forget or mistype.</td><td>$0</td></tr>
-            <tr class="is-best"><td>GitHub Actions + OIDC role <span class="pill pill--decided">Best fit</span></td><td>Short-lived login, nothing stored, every run logged.</td><td>$0 (free for public repos)</td></tr>
-            <tr><td>GitHub Actions + access keys</td><td>A long-lived key in GitHub secrets can leak.</td><td>$0</td></tr>
-            <tr><td>AWS CodePipeline + CodeBuild</td><td>Stays in AWS, but more services to set up.</td><td>$0–1 for the pipeline (first V1 pipeline free), plus build minutes</td></tr>
-            <tr><td>EC2 + Secure Shell (SSH) and rsync (a file-copy tool)</td><td>Right for dynamic sites. For static files it only adds a server to patch and a key to guard.</td><td>About $8 or more</td></tr>
-            <tr><td>AWS Amplify Hosting</td><td>Easiest, but hides the pieces I wanted to learn.</td><td>Low, usage-based</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>
-        Cost is not what decides this; security and simplicity are. For a static website, EC2
-        costs real money and upkeep for no benefit. For a dynamic app it would be a candidate.
-        Sources:
-        <a href="https://docs.github.com/en/billing/concepts/product-billing/github-actions" target="_blank" rel="noopener">GitHub Actions</a> ·
-        <a href="https://aws.amazon.com/codepipeline/pricing/" target="_blank" rel="noopener">CodePipeline</a> ·
-        <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a> ·
-        <a href="https://aws.amazon.com/amplify/pricing/" target="_blank" rel="noopener">Amplify</a> ·
-        <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
-      </p>
-      </section>
-
-      <!-- 8. Design Considerations -->
+      <!-- 5. Design Considerations (includes cost) -->
       <h2>Design Considerations</h2>
       <div class="table-wrap">
         <table class="cost-table design-table">
           <thead><tr><th>Category</th><th>Decision</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Requirements &amp; workload</td><td>One maintainer, a few merges a week, one repository.</td><td><span class="pill pill--decided">Decided</span></td></tr>
-            <tr><td>Scalability &amp; performance</td><td>One deploy at a time; <code>sync</code> uploads only changed files.</td><td><span class="pill pill--decided">Decided</span></td></tr>
-            <tr><td>Availability &amp; fault tolerance</td><td>The site keeps serving if the pipeline is down; a repo variable pauses deploys.</td><td><span class="pill pill--planned">Rollback untested</span></td></tr>
+            <tr><td>Requirements &amp; workload</td><td>One maintainer, a few merges a week, one repository. A pull request merging into <code>main</code> publishes <code>src/</code>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Scalability &amp; performance</td><td>One deploy at a time. <code>aws s3 sync</code> re-uploads every file on each run, which is fine for a small site.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Availability &amp; fault tolerance</td><td>The site keeps serving if the pipeline is down, and a repository variable pauses deploys. Rolling back by reverting the commit is untested. The pipeline depends on GitHub.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
             <tr><td>Data &amp; consistency</td><td>n/a — static files only; Git is the source of truth.</td><td><span class="pill pill--na">n/a</span></td></tr>
-            <tr><td>Security</td><td>The IAM role trusts only this repository, the <code>production</code> environment and <code>main</code>; one S3 bucket.</td><td><span class="pill pill--decided">Decided</span></td></tr>
-            <tr><td>Observability</td><td>Each run logs every upload and delete. Failure alerts are missing.</td><td><span class="pill pill--na">Alerts not available yet</span></td></tr>
-            <tr><td>Deployment &amp; DevOps</td><td>Dry run, real run, then auto-deploy. The IAM role was made by hand; Terraform is next.</td><td><span class="pill pill--planned">IaC planned</span></td></tr>
-            <tr><td>Cost &amp; trade-offs</td><td>Free pipeline; see <a href="#cost">Alternatives and Cost</a>.</td><td><span class="pill pill--decided">Decided</span></td></tr>
+            <tr><td>Security</td><td>An OIDC role instead of stored keys: a leaked key works until someone notices, while an OIDC login expires in about an hour. The role trusts only this repository, the <code>production</code> environment and <code>main</code>, and reaches one bucket.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Observability</td><td>Each run logs every upload and delete. Failure alerts are missing.</td><td><span class="pill pill--na">Not addressed yet</span></td></tr>
+            <tr><td>Deployment &amp; DevOps</td><td>Dry run, real run, then auto-deploy. <code>--delete</code> removes anything not in Git, and no link check runs first. The role was made by hand. Next: Terraform, pin actions to commit SHAs with Dependabot, a link check, and clearing the CloudFront cache after a deploy.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
+            <tr class="is-best"><td>Cost &amp; trade-offs</td><td>$0 for the pipeline (estimate); GitHub Actions is free for public repositories. Rejected: stored access keys, because a long-lived key can leak; AWS CodePipeline and CodeBuild, $0–1 plus build minutes and more services to set up; EC2 with SSH, about $8 or more and a server to patch for static files; AWS Amplify Hosting, which hides the pieces I wanted to learn. Sources:
+              <a href="https://docs.github.com/en/billing/concepts/product-billing/github-actions" target="_blank" rel="noopener">GitHub Actions</a> ·
+              <a href="https://aws.amazon.com/codepipeline/pricing/" target="_blank" rel="noopener">CodePipeline</a> ·
+              <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a> ·
+              <a href="https://aws.amazon.com/amplify/pricing/" target="_blank" rel="noopener">Amplify</a></td><td><span class="pill pill--decided">Addressed</span></td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- 9. Problems solved and proof -->
-      <h2>Problems I Solved</h2>
-      <ul>
-        <li><strong>"Not authorized to perform sts:AssumeRoleWithWebIdentity"</strong> — my repository uses an immutable subject with numeric IDs, but the IAM trust policy used the plain name. I read the real format from the GitHub API and fixed the policy.</li>
-        <li><strong>"no identity-based policy allows s3:ListBucket"</strong> — the login worked, but the role had no permissions yet. I added a policy limited to this S3 bucket.</li>
-        <li><strong>Dry run impossible before the first merge</strong> — a manual run needs the workflow on <code>main</code>, and merging would have started a real <code>--delete</code> deploy. I added an <code>AUTO_DEPLOY</code> switch, merged safely, dry-ran, then turned it on.</li>
-      </ul>
-      <p><strong>Proof:</strong> the dry run listed 10 uploads and 1 delete (an old sample page). After the real run, the main pages and the stylesheet returned 200 and the deleted page returned 404.</p>
-
-      <!-- 10. Limits and next steps -->
-      <h2>Limits and Next Steps</h2>
-      <ul>
-        <li><strong>Depends on GitHub.</strong> If Actions is down I deploy by hand; the live site is unaffected.</li>
-        <li><strong><code>--delete</code> is blunt, and nothing is tested yet.</strong> It removes anything in the S3 bucket that is not in Git, and no link or HTML check runs before a deploy.</li>
-        <li><strong>At 10× the scale:</strong> many sites need reusable workflows, large S3 buckets make <code>sync</code> slow, and several environments need separate IAM roles and buckets.</li>
-        <li><strong>Next:</strong> create the IAM role with Terraform, pin the actions to commit SHAs with Dependabot, add a link check and failure alerts.</li>
-      </ul>
 
       <div class="callout" style="margin-top:2rem;">
         <div class="callout-label">Related</div>

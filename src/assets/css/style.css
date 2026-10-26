@@ -18,6 +18,12 @@
   --tag-text:    #cbd5e1;
   --green:       #16a34a;
   --orange:      #ea580c;
+  --danger:      #f87171;
+  --danger-bg:   rgba(248, 113, 113, 0.10);
+  --danger-text: #fca5a5;
+  --success:      #4ade80;
+  --success-bg:   rgba(74, 222, 128, 0.10);
+  --success-text: #86efac;
 
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
   --mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -349,6 +355,19 @@ a:hover { text-decoration: underline; }
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
 }
+/* Reserved space for an architecture image that is not drawn yet */
+.diagram-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  padding: 1rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
 .diagram-caption {
   font-size: 0.8rem;
   color: var(--text-muted);
@@ -372,6 +391,13 @@ a:hover { text-decoration: underline; }
   color: var(--accent);
   margin-bottom: 0.35rem;
 }
+/* Problem / error callout: red tone for struggles */
+.callout--problem { border-left-color: var(--danger); background: var(--danger-bg); }
+.callout--problem .callout-label { color: var(--danger-text); }
+/* Fix callout: green tone for the solution */
+.callout--fix { border-left-color: var(--success); background: var(--success-bg); }
+.callout--fix .callout-label { color: var(--success-text); }
+.callout--fix ol { margin-bottom: 0; }
 
 /* ── Cost comparison table ───────────────────────────────── */
 .table-wrap {
