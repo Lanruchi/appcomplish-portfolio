@@ -153,18 +153,18 @@
         </svg>
       </div>
       <p class="diagram-caption">Figure 2 — Four stages, in the order I built them. I opened the site after each one, so a failure pointed to the last change. The site is only files, so it needs no server. OAC is Origin Access Control.</p>
-      <p><strong>Proof:</strong> <code>https://appcomplish.click</code> returns HTTP 200 through CloudFront, and the HTTP address redirects to HTTPS.</p>
+      <p><strong>Proof:</strong> <code>https://appcomplish.click</code> returns HTTP 200 through CloudFront, and so does <code>https://www.appcomplish.click</code>. The HTTP address redirects to HTTPS.</p>
 
       <!-- 4. Locking the bucket to CloudFront -->
-      <h2 id="lock">Problem: Making the S3 Bucket Private Broke the Site</h2>
+      <h2 id="problems">Problems I Hit and How I Fixed Them</h2>
       <div class="callout callout--problem">
-        <div class="callout-label">What went wrong</div>
-        <p>
-          After I turned on S3 Block Public Access, <code>https://appcomplish.click</code> returned an
-          S3 <code>AccessDenied</code> error, although the HTTP to HTTPS redirect still worked. The
-          origin's <strong>Origin access</strong> setting was still <strong>Public</strong>, so CloudFront
-          sent unsigned requests, which a private bucket refuses.
-        </p>
+        <div class="callout-label">Problem 1</div>
+        <p><strong>The site broke when I made the bucket private</strong><br />
+          <strong>Trying to:</strong> make the S3 bucket private so only CloudFront can read it.<br />
+          <strong>What happened:</strong> after I turned on S3 Block Public Access, <code>https://appcomplish.click</code>
+          returned an S3 <code>AccessDenied</code> error, although the HTTP to HTTPS redirect still worked.<br />
+          <strong>Why:</strong> the origin's <strong>Origin access</strong> setting was still <strong>Public</strong>, so
+          CloudFront sent unsigned requests, which a private bucket refuses.</p>
       </div>
       <div class="callout callout--fix">
         <div class="callout-label">Fix</div>
@@ -177,6 +177,25 @@
           <li>Wait for the distribution to show <strong>Deployed</strong>, then reload the site.</li>
         </ol>
         <p><strong>Lesson:</strong> a working redirect says nothing about the origin.</p>
+      </div>
+
+      <div class="callout callout--problem">
+        <div class="callout-label">Problem 2</div>
+        <p><strong>www.appcomplish.click showed "not secure"</strong><br />
+          <strong>Trying to:</strong> make <code>www.appcomplish.click</code> open the site over HTTPS, the same as the bare domain.<br />
+          <strong>What happened:</strong> after I created the Route 53 record for <code>www</code>, the browser said the
+          connection was not secure.<br />
+          <strong>Why:</strong> CloudFront only answers for names listed under the distribution's <strong>Alternate domain
+          names</strong>, and <code>www</code> was not listed, so it refused the secure connection. The certificate was
+          not the cause: it already covered <code>www</code> through <code>*.appcomplish.click</code>.</p>
+      </div>
+      <div class="callout callout--fix">
+        <div class="callout-label">Fix</div>
+        <ol>
+          <li><strong>Route 53</strong> → <strong>Hosted zones</strong> → <code>appcomplish.click</code> → <strong>Create record</strong>: name <code>www</code>, type A, <strong>Alias</strong> on, route to my CloudFront distribution.</li>
+          <li><strong>CloudFront</strong> → my distribution → <strong>General</strong> → <strong>Settings</strong> → <strong>Edit</strong> → <strong>Alternate domain names</strong> → <strong>Add item</strong>: <code>www.appcomplish.click</code>.</li>
+          <li><strong>Save changes</strong>, wait for the distribution to show <strong>Deployed</strong>, then reload the site.</li>
+        </ol>
       </div>
       <div class="table-wrap">
         <table class="cost-table">
@@ -204,7 +223,7 @@
             <tr><td>Scalability &amp; performance</td><td>CloudFront caches files at the edge. Latency not measured yet.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Availability &amp; fault tolerance</td><td>No servers to fail, and S3 Standard stores objects across multiple Availability Zones per <a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">AWS</a>. One bucket and DNS remain single points.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
             <tr><td>Data &amp; consistency</td><td>n/a — static files only; no database or shared state.</td><td><span class="pill pill--na">n/a</span></td></tr>
-            <tr><td>Security</td><td>HTTPS through ACM (the certificate must be created in <code>us-east-1</code>); private bucket via OAC. See <a href="#lock">above</a>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Security</td><td>HTTPS through ACM (the certificate must be created in <code>us-east-1</code>); private bucket via OAC. See <a href="#problems">above</a>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Observability</td><td>Access logs and alarms are not set up yet.</td><td><span class="pill pill--na">Not addressed yet</span></td></tr>
             <tr><td>Deployment &amp; DevOps</td><td>GitHub Actions deploys on merge (<a href="s3-cicd-pipeline.html">CI/CD case study</a>). Next time I would start with Terraform.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr class="is-best"><td>Cost &amp; trade-offs</td><td>Under $1 a month with S3, Route 53 and CloudFront's Free plan (estimate). Rejected: EC2 or Lightsail, about $5–12 plus patching; AWS Amplify Hosting, which hides the AWS pieces I want to learn; a separate AWS Web Application Firewall (WAF), which adds fees a static site does not need. Sources:
