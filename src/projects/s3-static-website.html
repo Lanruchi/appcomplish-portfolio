@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a" />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <title>S3 Static Website Hosting — Nurudeen Adeniyi</title>
-  <meta name="description" content="Case study: hosting a static portfolio website on Amazon S3 with Route 53, then adding CloudFront and ACM. Decisions, cost and tradeoffs, including when EC2 would be the better choice." />
+  <meta name="description" content="Case study: hosting a static portfolio website on Amazon S3 with Route 53, then CloudFront and ACM for HTTPS. Decisions, cost and tradeoffs, and the problem I hit making the bucket private." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -57,168 +57,165 @@
       <div class="callout">
         <div class="callout-label">Business Requirement</div>
         <p>
-          I'm moving into cloud engineering and need a public portfolio that recruiters and
-          hiring managers anywhere can open on a phone or laptop. It has to show real AWS work,
-          cost almost nothing, and not become another system I have to patch or babysit.
+          I'm moving into cloud engineering and need a public portfolio that recruiters can open on any
+          device. It must run on my own domain over HTTPS, have no servers to patch, keep its storage
+          bucket private and cost very little.
         </p>
         <p><strong>How would you host a portfolio website like this?</strong></p>
       </div>
 
       <!-- 2. At a glance -->
       <dl class="glance">
-        <div><dt>Goal</dt><dd>Host my portfolio on AWS with no servers</dd></div>
         <div><dt>Key decision</dt><dd>Static hosting on an Amazon S3 bucket instead of a server</dd></div>
-        <div><dt>Stack</dt><dd>Amazon S3 bucket, Route 53 (planned: CloudFront and AWS Certificate Manager (ACM))</dd></div>
-        <div><dt>Who</dt><dd>Recruiters and hiring managers using a browser</dd></div>
-        <div><dt>Monthly cost</dt><dd>Under $1 (CloudFront's Free plan is $0)</dd></div>
-        <div><dt>Status</dt><dd>Phase 1 live, Phase 2 in progress</dd></div>
+        <div><dt>Stack</dt><dd>Amazon S3, Route 53, Amazon CloudFront, AWS Certificate Manager (ACM)</dd></div>
+        <div><dt>Monthly cost</dt><dd>Under $1 (estimate)</dd></div>
+        <div><dt>Status</dt><dd>Live on HTTPS; bucket private</dd></div>
       </dl>
 
-      <!-- 3. Summary -->
-      <div class="callout">
-        <div class="callout-label">Summary</div>
-        This portfolio is a static website: HTML, CSS and JavaScript files with no server-side
-        code. I host it in an Amazon S3 bucket behind a Route 53 Domain Name System (DNS) record, so there is nothing
-        to patch and it costs under $1 a month. Next I'm adding CloudFront on its $0 Free plan and an ACM
-        certificate for HTTPS and a private bucket. I'm skipping a separately billed AWS Web Application Firewall (WAF), because a static
-        site has little to filter.
-      </div>
-
-      <!-- 4. Figure -->
+      <!-- 3. Figures -->
+      <!-- Architecture image: when drawn, save it as src/assets/images/projects/s3-static-website/architecture.png
+           and replace the div below with <img src="../assets/images/projects/s3-static-website/architecture.png" alt="..." /> -->
       <div class="diagram-box">
-        <svg viewBox="0 0 760 250" role="img" aria-label="Phase 1, live: a visitor's browser asks Amazon Route 53 (DNS) for appcomplish.click and is sent to the public website endpoint of an Amazon S3 bucket over HTTP. Phase 2, planned: the browser goes through Route 53 to Amazon CloudFront, which serves HTTPS using an AWS Certificate Manager (ACM) certificate and reads from a private S3 bucket through Origin Access Control." style="width:100%;height:auto;">
+        <div class="diagram-slot" role="img" aria-label="AWS architecture diagram, not drawn yet">AWS architecture diagram: coming soon</div>
+      </div>
+      <p class="diagram-caption">Figure 1 — The architecture: Amazon Route 53, Amazon CloudFront, AWS Certificate Manager (ACM) and a private Amazon S3 bucket.</p>
+
+      <div class="diagram-box">
+        <svg viewBox="0 0 760 440" role="img" aria-label="Phase 1: a visitor's browser requests the public S3 website URL of an Amazon S3 bucket over HTTP. Phase 2: the browser asks Amazon Route 53 (DNS) for appcomplish.click and is sent to the S3 website endpoint over HTTP. Phase 3: the browser goes through Route 53 to Amazon CloudFront, which serves HTTPS using an AWS Certificate Manager (ACM) certificate, while the S3 bucket is still public. Phase 4, live: the same path, but the bucket is private and readable only by CloudFront through Origin Access Control (OAC)." style="width:100%;height:auto;">
           <defs>
             <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0 0L10 5L0 10z" fill="var(--text-muted)"/>
             </marker>
           </defs>
           <g font-family="Inter, system-ui, sans-serif" font-size="13" text-anchor="middle">
-            <text x="6" y="22" text-anchor="start" fill="var(--text-muted)" font-weight="700" font-size="12">PHASE 1 (LIVE)</text>
+            <text x="6" y="22" text-anchor="start" fill="var(--text-muted)" font-weight="700" font-size="12">PHASE 1 (S3 URL ONLY)</text>
             <g stroke="var(--border)" fill="var(--bg-subtle)">
               <rect x="6" y="34" width="150" height="56" rx="8"/>
-              <rect x="206" y="34" width="150" height="56" rx="8"/>
-              <rect x="406" y="34" width="190" height="56" rx="8"/>
+              <rect x="206" y="34" width="230" height="56" rx="8"/>
             </g>
             <g fill="var(--text)" font-weight="600">
-              <text x="81" y="58">Browser</text><text x="281" y="58">Route 53</text><text x="501" y="58">S3 bucket</text>
+              <text x="81" y="58">Browser</text><text x="321" y="58">S3 bucket</text>
             </g>
             <g fill="var(--text-muted)" font-size="11.5">
-              <text x="81" y="76">appcomplish.click</text><text x="281" y="76">DNS record</text><text x="501" y="76">website endpoint, HTTP only</text>
+              <text x="81" y="76">S3 website URL</text><text x="321" y="76">website endpoint, public, HTTP only</text>
             </g>
             <g stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow2)">
-              <line x1="158" y1="62" x2="202" y2="62"/><line x1="358" y1="62" x2="402" y2="62"/>
+              <line x1="158" y1="62" x2="202" y2="62"/>
             </g>
-            <text x="6" y="140" text-anchor="start" fill="var(--text-muted)" font-weight="700" font-size="12">PHASE 2 (PLANNED)</text>
+            <text x="6" y="122" text-anchor="start" fill="var(--text-muted)" font-weight="700" font-size="12">PHASE 2 (CUSTOM DOMAIN, HTTP)</text>
             <g stroke="var(--border)" fill="var(--bg-subtle)">
-              <rect x="6" y="152" width="130" height="64" rx="8"/>
-              <rect x="176" y="152" width="130" height="64" rx="8"/>
-              <rect x="346" y="152" width="190" height="64" rx="8"/>
-              <rect x="576" y="152" width="178" height="64" rx="8"/>
+              <rect x="6" y="134" width="150" height="56" rx="8"/>
+              <rect x="206" y="134" width="150" height="56" rx="8"/>
+              <rect x="406" y="134" width="190" height="56" rx="8"/>
             </g>
             <g fill="var(--text)" font-weight="600">
-              <text x="71" y="178">Browser</text><text x="241" y="178">Route 53</text><text x="441" y="178">CloudFront</text><text x="665" y="178">S3 bucket</text>
+              <text x="81" y="158">Browser</text><text x="281" y="158">Route 53</text><text x="501" y="158">S3 bucket</text>
             </g>
             <g fill="var(--text-muted)" font-size="11.5">
-              <text x="71" y="196">HTTPS</text><text x="241" y="196">DNS record</text><text x="441" y="196">edge cache, ACM certificate</text><text x="665" y="196">private, via OAC</text>
+              <text x="81" y="176">appcomplish.click</text><text x="281" y="176">DNS record</text><text x="501" y="176">website endpoint, HTTP only</text>
             </g>
             <g stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow2)">
-              <line x1="138" y1="184" x2="172" y2="184"/><line x1="308" y1="184" x2="342" y2="184"/><line x1="538" y1="184" x2="572" y2="184"/>
+              <line x1="158" y1="162" x2="202" y2="162"/><line x1="358" y1="162" x2="402" y2="162"/>
+            </g>
+            <text x="6" y="240" text-anchor="start" fill="var(--text-muted)" font-weight="700" font-size="12">PHASE 3 (HTTPS, BUCKET STILL PUBLIC)</text>
+            <g stroke="var(--border)" fill="var(--bg-subtle)">
+              <rect x="6" y="252" width="130" height="64" rx="8"/>
+              <rect x="176" y="252" width="130" height="64" rx="8"/>
+              <rect x="346" y="252" width="190" height="64" rx="8"/>
+              <rect x="576" y="252" width="178" height="64" rx="8"/>
+            </g>
+            <g fill="var(--text)" font-weight="600">
+              <text x="71" y="278">Browser</text><text x="241" y="278">Route 53</text><text x="441" y="278">CloudFront</text><text x="665" y="278">S3 bucket</text>
+            </g>
+            <g fill="var(--text-muted)" font-size="11.5">
+              <text x="71" y="296">HTTPS</text><text x="241" y="296">DNS record</text><text x="441" y="296">edge cache, ACM certificate</text><text x="665" y="296">still public</text>
+            </g>
+            <g stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow2)">
+              <line x1="138" y1="284" x2="172" y2="284"/><line x1="308" y1="284" x2="342" y2="284"/><line x1="538" y1="284" x2="572" y2="284"/>
+            </g>
+            <text x="6" y="350" text-anchor="start" fill="var(--text-muted)" font-weight="700" font-size="12">PHASE 4 (LIVE, PRIVATE BUCKET)</text>
+            <g stroke="var(--border)" fill="var(--bg-subtle)">
+              <rect x="6" y="362" width="130" height="64" rx="8"/>
+              <rect x="176" y="362" width="130" height="64" rx="8"/>
+              <rect x="346" y="362" width="190" height="64" rx="8"/>
+              <rect x="576" y="362" width="178" height="64" rx="8"/>
+            </g>
+            <g fill="var(--text)" font-weight="600">
+              <text x="71" y="388">Browser</text><text x="241" y="388">Route 53</text><text x="441" y="388">CloudFront</text><text x="665" y="388">S3 bucket</text>
+            </g>
+            <g fill="var(--text-muted)" font-size="11.5">
+              <text x="71" y="406">HTTPS</text><text x="241" y="406">DNS record</text><text x="441" y="406">edge cache, ACM certificate</text><text x="665" y="406">private, CloudFront only</text>
+            </g>
+            <g stroke="var(--text-muted)" stroke-width="1.5" marker-end="url(#arrow2)">
+              <line x1="138" y1="394" x2="172" y2="394"/><line x1="308" y1="394" x2="342" y2="394"/><line x1="538" y1="394" x2="572" y2="394"/>
             </g>
           </g>
         </svg>
       </div>
-      <p class="diagram-caption">Figure 1 — Why static hosting fits: the site is only files, so an Amazon S3 bucket can serve it with no server to run. A dynamic app (server-side code, a database, user sessions) would instead need compute such as Amazon Elastic Compute Cloud (EC2) virtual servers or containers. OAC is Origin Access Control; ACM is AWS Certificate Manager.</p>
+      <p class="diagram-caption">Figure 2 — Four stages, in the order I built them. I opened the site after each one, so a failure pointed to the last change. The site is only files, so it needs no server. OAC is Origin Access Control.</p>
+      <p><strong>Proof:</strong> <code>https://appcomplish.click</code> returns HTTP 200 through CloudFront, and the HTTP address redirects to HTTPS.</p>
 
-      <!-- 5. Requirements -->
-      <h2>Requirements</h2>
-      <div class="table-wrap">
-        <table class="cost-table">
-          <thead><tr><th>Requirement</th><th>Target</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Public site on my own domain</td><td>Live on <code>appcomplish.click</code></td><td><span class="pill pill--decided">Met (Phase 1)</span></td></tr>
-            <tr><td>No servers to patch or run</td><td>Zero servers</td><td><span class="pill pill--decided">Met</span></td></tr>
-            <tr><td>Low running cost</td><td>Single-digit dollars a month</td><td><span class="pill pill--decided">Met (estimate)</span></td></tr>
-            <tr><td>HTTPS on the custom domain</td><td>TLS certificate via ACM</td><td><span class="pill pill--planned">Planned (Phase 2)</span></td></tr>
-            <tr><td>S3 bucket not publicly readable</td><td>Private bucket behind Origin Access Control</td><td><span class="pill pill--planned">Planned (Phase 2)</span></td></tr>
-          </tbody>
-        </table>
+      <!-- 4. Locking the bucket to CloudFront -->
+      <h2 id="lock">Problem: Making the S3 Bucket Private Broke the Site</h2>
+      <div class="callout callout--problem">
+        <div class="callout-label">What went wrong</div>
+        <p>
+          After I turned on S3 Block Public Access, <code>https://appcomplish.click</code> returned an
+          S3 <code>AccessDenied</code> error, although the HTTP to HTTPS redirect still worked. The
+          origin's <strong>Origin access</strong> setting was still <strong>Public</strong>, so CloudFront
+          sent unsigned requests, which a private bucket refuses.
+        </p>
       </div>
-
-      <!-- 6. How it works -->
-      <h2>How It Works</h2>
-      <ol>
-        <li>The domain <code>appcomplish.click</code> is registered in Route 53, which holds the DNS record.</li>
-        <li>The record points visitors to an S3 bucket configured for static website hosting.</li>
-        <li>The S3 bucket serves the HTML, CSS and JavaScript files. <strong>Phase 2</strong> puts CloudFront in front, adds an ACM certificate for HTTPS, and makes the bucket private.</li>
-      </ol>
-      <p><strong>Proof (Phase 1):</strong> the home page, About, Resume, Projects and the stylesheet all return HTTP 200 on <code>appcomplish.click</code>.</p>
-      <div class="callout">
-        <div class="callout-label">Key Decision</div>
-        Static hosting on an Amazon S3 bucket instead of a server. A server (EC2 or a $5 Lightsail instance) adds a web server and ongoing patching, and a static site gets nothing from either.
-      </div>
-
-      <!-- 7. Alternatives and cost -->
-      <section class="cost-section" id="cost">
-      <h2>Alternatives and Cost</h2>
-      <div class="cost-headline">
-        <span class="cost-figure">Under $1</span>
-        <span class="cost-caption">a month with S3, Route 53 and CloudFront's $0 Free plan (estimate). The plan covers up to 1M requests and 100 GB of data transfer a month.</span>
+      <div class="callout callout--fix">
+        <div class="callout-label">Fix</div>
+        <ol>
+          <li>In <strong>CloudFront</strong> → my distribution → <strong>Origins</strong> → <strong>Edit</strong> the S3 origin.</li>
+          <li>Set the origin domain to the bucket's regular endpoint (not the <code>s3-website</code> one).</li>
+          <li><strong>Origin access</strong> → <strong>Origin access control settings</strong> → create an OAC that signs requests.</li>
+          <li>Save, then copy the bucket policy CloudFront generates.</li>
+          <li>In <strong>S3</strong> → bucket → <strong>Permissions</strong> → <strong>Bucket policy</strong>: paste it. It lets only <code>cloudfront.amazonaws.com</code> call <code>s3:GetObject</code>, limited by an <code>AWS:SourceArn</code> condition to my one distribution.</li>
+          <li>Wait for the distribution to show <strong>Deployed</strong>, then reload the site.</li>
+        </ol>
+        <p><strong>Lesson:</strong> a working redirect says nothing about the origin.</p>
       </div>
       <div class="table-wrap">
         <table class="cost-table">
-          <thead>
-            <tr><th>Option</th><th>Why or why not</th><th>Estimated monthly</th></tr>
-          </thead>
+          <thead><tr><th>Option</th><th>Why or why not</th></tr></thead>
           <tbody>
-            <tr><td>S3 website endpoint only (Phase 1)</td><td>Simplest, but one region, no edge cache, HTTP only, public bucket.</td><td>Under $1</td></tr>
-            <tr class="is-best"><td>S3 + CloudFront + ACM (Phase 2) <span class="pill pill--decided">Best fit</span></td><td>Adds HTTPS, edge caching and a private bucket. CloudFront's $0 Free plan covers this traffic and ACM public certificates are free.</td><td>Under $1</td></tr>
-            <tr><td>S3 + CloudFront + ACM + separate AWS WAF</td><td>Adds request filtering for monthly fees plus $0.60 per million requests, but a site with no login or form gains little.</td><td>Billed separately, see pricing</td></tr>
-            <tr><td>EC2 or Lightsail + Nginx</td><td>Right for a dynamic site. For static files it adds a server to patch.</td><td>About $5–12</td></tr>
-            <tr><td>Vercel, Netlify or AWS Amplify</td><td>Faster to set up, but hides the AWS pieces I want to learn.</td><td>Free or low</td></tr>
+            <tr><td>Public bucket behind CloudFront</td><td>HTTPS works, but visitors can skip CloudFront and read S3 directly.</td></tr>
+            <tr><td>Origin Access Identity (OAI)</td><td>The older private-bucket method. AWS now recommends OAC, and OAI cannot read buckets encrypted with AWS Key Management Service keys.</td></tr>
+            <tr class="is-best"><td>Origin Access Control (OAC) <span class="pill pill--decided">Best fit</span></td><td>The bucket stays private, CloudFront signs each request, and there is no secret to store.</td></tr>
           </tbody>
         </table>
       </div>
       <p>
-        CloudFront's Free plan costs $0 at this scale, so adding it is about HTTPS, caching and a
-        private bucket, not money. A separately billed WAF is the opposite: it adds monthly fees on
-        top of everything else, so it is the first thing to question.
-        Sources:
-        <a href="https://aws.amazon.com/s3/pricing/" target="_blank" rel="noopener">S3</a> ·
-        <a href="https://aws.amazon.com/cloudfront/pricing/" target="_blank" rel="noopener">CloudFront</a> ·
-        <a href="https://aws.amazon.com/waf/pricing/" target="_blank" rel="noopener">WAF</a> ·
-        <a href="https://aws.amazon.com/lightsail/pricing/" target="_blank" rel="noopener">Lightsail</a> ·
-        <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a> ·
-        <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS Pricing Calculator</a>
+        Tradeoffs: OAC needs the bucket's regular endpoint, not the website endpoint, and a missing file
+        then returns 403 instead of 404 until I add a CloudFront custom error response.
+        Source: <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html" target="_blank" rel="noopener">Restricting access to an S3 origin</a>
       </p>
-      </section>
 
-      <!-- 8. Design Considerations -->
+      <!-- 5. Design Considerations (includes cost) -->
       <h2>Design Considerations</h2>
       <div class="table-wrap">
         <table class="cost-table design-table">
           <thead><tr><th>Category</th><th>Decision</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Requirements &amp; workload</td><td>Browsers, low traffic, static content, no logins.</td><td><span class="pill pill--decided">Decided</span></td></tr>
-            <tr><td>Scalability &amp; performance</td><td>S3 alone has no edge cache; CloudFront adds one. Latency not measured yet.</td><td><span class="pill pill--planned">Planned (Phase 2)</span></td></tr>
-            <tr><td>Availability &amp; fault tolerance</td><td>No servers to fail, and S3 Standard stores objects across multiple Availability Zones per <a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">AWS</a>. One bucket and DNS remain single points; no multi-region copy.</td><td><span class="pill pill--planned">Partly decided</span></td></tr>
+            <tr><td>Requirements &amp; workload</td><td>Browsers, low traffic, static content, no logins.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Scalability &amp; performance</td><td>CloudFront caches files at the edge. Latency not measured yet.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Availability &amp; fault tolerance</td><td>No servers to fail, and S3 Standard stores objects across multiple Availability Zones per <a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">AWS</a>. One bucket and DNS remain single points.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
             <tr><td>Data &amp; consistency</td><td>n/a — static files only; no database or shared state.</td><td><span class="pill pill--na">n/a</span></td></tr>
-            <tr><td>Security</td><td>Phase 1: public read-only bucket over HTTP. Phase 2: HTTPS and a private bucket.</td><td><span class="pill pill--planned">Planned</span></td></tr>
-            <tr><td>Observability</td><td>Access logs and alarms are not set up yet.</td><td><span class="pill pill--na">Not available yet</span></td></tr>
-            <tr><td>Deployment &amp; DevOps</td><td>GitHub Actions deploys on merge (see the <a href="s3-cicd-pipeline.html">CI/CD case study</a>). Terraform is next.</td><td><span class="pill pill--decided">Decided</span></td></tr>
-            <tr><td>Cost &amp; trade-offs</td><td>Under $1 a month; a separate WAF would add fees; see <a href="#cost">Alternatives and Cost</a>.</td><td><span class="pill pill--decided">Decided</span></td></tr>
+            <tr><td>Security</td><td>HTTPS through ACM (the certificate must be created in <code>us-east-1</code>); private bucket via OAC. See <a href="#lock">above</a>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Observability</td><td>Access logs and alarms are not set up yet.</td><td><span class="pill pill--na">Not addressed yet</span></td></tr>
+            <tr><td>Deployment &amp; DevOps</td><td>GitHub Actions deploys on merge (<a href="s3-cicd-pipeline.html">CI/CD case study</a>). Next time I would start with Terraform.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr class="is-best"><td>Cost &amp; trade-offs</td><td>Under $1 a month with S3, Route 53 and CloudFront's Free plan (estimate). Rejected: EC2 or Lightsail, about $5–12 plus patching; AWS Amplify Hosting, which hides the AWS pieces I want to learn; a separate AWS Web Application Firewall (WAF), which adds fees a static site does not need. Sources:
+              <a href="https://aws.amazon.com/s3/pricing/" target="_blank" rel="noopener">S3</a> ·
+              <a href="https://aws.amazon.com/cloudfront/pricing/" target="_blank" rel="noopener">CloudFront</a> ·
+              <a href="https://aws.amazon.com/waf/pricing/" target="_blank" rel="noopener">WAF</a> ·
+              <a href="https://aws.amazon.com/lightsail/pricing/" target="_blank" rel="noopener">Lightsail</a> ·
+              <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">EC2</a></td><td><span class="pill pill--decided">Addressed</span></td></tr>
           </tbody>
         </table>
       </div>
-
-      <!-- 9. Limits and next steps -->
-      <h2>Limits and Next Steps</h2>
-      <ul>
-        <li><strong>No HTTPS from S3 alone.</strong> The website endpoint serves HTTP, so a custom domain with HTTPS needs CloudFront. The ACM certificate for CloudFront must be created in <code>us-east-1</code>.</li>
-        <li><strong>No server-side logic.</strong> Forms, logins or APIs need other services, such as API Gateway with Lambda, or a different design.</li>
-        <li><strong>At 10× the traffic</strong> CloudFront absorbs it as cache hits. What would break is dynamic content: user accounts, orders or a product catalog need an API, a database and session handling.</li>
-        <li><strong>Cache invalidation costs money</strong> past the free tier, so versioned filenames (<code>style.v2.css</code>) beat invalidating on every deploy.</li>
-        <li><strong>Do differently:</strong> I would have started with Terraform instead of the console and built CI/CD from the start. The pipeline is now built; Terraform is next.</li>
-      </ul>
 
       <div class="callout" style="margin-top:2rem;">
         <div class="callout-label">Related</div>
