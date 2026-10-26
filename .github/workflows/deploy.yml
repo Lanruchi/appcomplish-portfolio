@@ -1,9 +1,19 @@
+# Deploys the website to AWS. What happens, in order:
+#   1. A change under src/ is merged into main (or someone clicks "Run workflow").
+#   2. GitHub starts a fresh Linux machine and runs the steps below on it.
+#   3. The machine logs in to AWS as an IAM role (no stored keys), copies src/ to the S3 bucket,
+#      then tells CloudFront to forget its cached copies so visitors see the new pages.
+#   4. GitHub deletes the machine. Nothing stays installed or logged in.
 name: Deploy to S3
 
+# WHEN this workflow starts
 on:
   push:
     branches: [main]
+    # Only start when the site files or this file change (a README edit does not deploy).
     paths: ["src/**", ".github/workflows/deploy.yml"]
+  # The manual "Run workflow" button in the Actions tab. It defaults to a dry run so a
+  # first click cannot change anything.
   workflow_dispatch:
     inputs:
       dry_run:
@@ -11,10 +21,16 @@ on:
         type: boolean
         default: true
 
+# WHAT this workflow is allowed to do inside GitHub. Everything not listed here is denied.
 permissions:
-  id-token: write # request the OIDC token used to assume the AWS role
+  # Lets the job ask GitHub for a signed OpenID Connect (OIDC) token. That token is the
+  # proof of identity the job shows to AWS in the "Log in to AWS" step.
+  id-token: write
+  # Lets the job read this repository's files (needed to check out the code).
   contents: read
 
+# Only one deploy at a time. A second one waits in line instead of cancelling the first,
+# because cancelling a half-finished sync could leave the bucket in a mixed state.
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -24,24 +40,58 @@ jobs:
     # Safety switch: pushes only deploy when the repo variable AUTO_DEPLOY is "true".
     # The manual "Run workflow" button always works (and defaults to a dry run).
     if: github.event_name == 'workflow_dispatch' || vars.AUTO_DEPLOY == 'true'
+    # A fresh Ubuntu virtual machine that GitHub provides for this one run. It is not your
+    # computer and not AWS CloudShell. GitHub's Ubuntu image already includes the AWS command
+    # line (aws), which is why no install step is needed.
     runs-on: ubuntu-latest
+    # Stop the job if it hangs for more than 10 minutes.
     timeout-minutes: 10
+    # Use the "production" environment. It holds the secret AWS_ROLE_ARN and the variables
+    # AWS_REGION, S3_BUCKET and CLOUDFRONT_DISTRIBUTION_ID, and it only accepts runs from
+    # main. This environment name is also part of the identity AWS checks (see below).
     environment: production
     steps:
+      # Copy this repository's files onto the machine so the next steps can see src/.
       - uses: actions/checkout@v4
 
+      # Log in to AWS without any stored key:
+      #   1. This step asks GitHub for the signed OIDC token (allowed by id-token: write).
+      #   2. It sends the token to AWS Security Token Service (STS) and asks to assume the
+      #      IAM role in AWS_ROLE_ARN.
+      #   3. AWS checks the token's "sub" line against the role's trust policy. It must be
+      #      exactly this repository's name and ID numbers plus ":environment:production".
+      #   4. If it matches, STS returns temporary credentials that last about an hour.
+      #   5. The step saves them in the machine's environment variables, so every aws command
+      #      after this runs as that role, with only that role's permissions.
+      # The trust policy only decides who may log in. What the role may DO comes from its
+      # permissions policies: the aws s3 sync and aws cloudfront RUN commands below work because
+      # those policies explicitly allow s3:ListBucket, s3:PutObject and s3:DeleteObject on this
+      # bucket and cloudfront:CreateInvalidation on this distribution. A command such as
+      # aws ec2 would log in fine but fail with UnauthorizedOperation, because no policy
+      # allows any EC2 action and AWS denies everything that is not explicitly allowed.
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      # Copy the website into the S3 bucket.
+      #   aws s3 sync src/ s3://<bucket>  makes the bucket match the src/ folder.
+      #   --delete                        also removes bucket files that are not in src/.
+      #   --dryrun                        only lists what would change (added when this is a
+      #                                   manual run with "dry run" ticked).
+      # Every run starts from a fresh checkout, so file timestamps are new and sync usually
+      # re-uploads all files. That is fine for a small site.
       - name: Sync src/ to S3
         env:
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '--dryrun' || '' }}
         run: aws s3 sync src/ "s3://${{ vars.S3_BUCKET }}" --delete $DRY_RUN
 
       # CloudFront keeps cached copies of each page, so clear them after a real deploy.
+      # Without this, visitors can keep seeing the old pages until the cache expires.
+      #   create-invalidation --paths "/*"  tells CloudFront to forget every cached file.
+      #                                     The quotes stop the shell from expanding the *.
       # Skipped on a dry run, and until the CLOUDFRONT_DISTRIBUTION_ID variable is set.
+      # The role needs the cloudfront:CreateInvalidation permission for this distribution.
       - name: Clear CloudFront cache
         if: (github.event_name != 'workflow_dispatch' || !inputs.dry_run) && vars.CLOUDFRONT_DISTRIBUTION_ID != ''
         run: aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths "/*"
