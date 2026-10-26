@@ -39,3 +39,9 @@ jobs:
         env:
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '--dryrun' || '' }}
         run: aws s3 sync src/ "s3://${{ vars.S3_BUCKET }}" --delete $DRY_RUN
+
+      # CloudFront keeps cached copies of each page, so clear them after a real deploy.
+      # Skipped on a dry run, and until the CLOUDFRONT_DISTRIBUTION_ID variable is set.
+      - name: Clear CloudFront cache
+        if: (github.event_name != 'workflow_dispatch' || !inputs.dry_run) && vars.CLOUDFRONT_DISTRIBUTION_ID != ''
+        run: aws cloudfront create-invalidation --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" --paths "/*"
