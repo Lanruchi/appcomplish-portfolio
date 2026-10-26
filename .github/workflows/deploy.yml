@@ -63,6 +63,12 @@ jobs:
       #   4. If it matches, STS returns temporary credentials that last about an hour.
       #   5. The step saves them in the machine's environment variables, so every aws command
       #      after this runs as that role, with only that role's permissions.
+      # The trust policy only decides who may log in. What the role may DO comes from its
+      # permissions policies: the aws s3 sync and aws cloudfront RUN commands below work because
+      # those policies explicitly allow s3:ListBucket, s3:PutObject and s3:DeleteObject on this
+      # bucket and cloudfront:CreateInvalidation on this distribution. A command such as
+      # aws ec2 would log in fine but fail with UnauthorizedOperation, because no policy
+      # allows any EC2 action and AWS denies everything that is not explicitly allowed.
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
