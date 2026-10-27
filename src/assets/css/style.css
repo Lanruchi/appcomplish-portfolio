@@ -655,3 +655,4 @@ footer a:hover { color: var(--accent); }
 }
 .hero-creds { margin-top: 1.25rem; }
 .hero-creds .tag { white-space: normal; }
+.section-more { margin-top: 2rem; text-align: center; }
