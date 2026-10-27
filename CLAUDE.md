@@ -28,7 +28,7 @@ Never create a new top-level folder without verifying no existing folder fits.
 
 ## Project
 appcomplish.click — Cloud engineering portfolio for Nurudeen Adeniyi.
-Goal: document AWS bootcamp projects as real case studies with decisions, tradeoffs, and architecture diagrams.
+Goal: document AWS cloud and DevOps projects as real case studies with decisions, tradeoffs, and architecture diagrams.
 
 ## Stack
 Static HTML/CSS/JS — no build step, no framework. All site files live in `src/` (the deploy root).
