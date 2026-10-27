@@ -19,7 +19,7 @@ appcomplish-portfolio/
 │   ├── 404.html                        # Not-found page
 │   ├── robots.txt
 │   ├── about.html                      # About — background and transition story
-│   ├── resume.html                     # Resume PDF link + cert badges
+│   ├── resume.html                     # Resume summary, LinkedIn contact + cert badges
 │   ├── projects.html                   # All projects listing
 │   ├── projects/
 │   │   ├── s3-static-website.html      # Case study: S3 static hosting

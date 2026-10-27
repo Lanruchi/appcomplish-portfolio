@@ -8,7 +8,7 @@ No build step. `cd src && python -m http.server 8000` → http://localhost:8000
 - [ ] No missing images/PDFs, no `path-to-...` placeholders
 - [ ] Looks right at phone width
 - [ ] Claims, dates and certs are accurate; nothing private
-- [ ] Resume PDF and profile photo are in `src/assets/`
+- [ ] Profile photo is in `src/assets/` (the resume is not published; recruiters message me on LinkedIn)
 - [ ] Dry-run the deploy workflow if you changed deletions/renames (`--delete` removes files not in `src/`)
 
 ## Deploy
