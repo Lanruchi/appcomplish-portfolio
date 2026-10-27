@@ -149,6 +149,7 @@ Every `src/projects/<slug>.html` follows `docs/templates/project-case-study.html
   1. **Be explicit.** On first use write the full name: "Amazon S3 bucket" not "bucket", "IAM role" not "role", and spell out "OpenID Connect (OIDC)", "AWS Security Token Service (STS)" and similar once per page. Name the actual tool, not "the pipeline" or "the server". Diagram labels may use acronyms defined in the figure's aria-label or caption.
   2. **Say why.** Every caption, decision and table row gives the reason, not just the fact.
   3. **State only what is true.** Write what was built, seen or sourced. No hypotheticals ("a dynamic app would...", "at 10× the traffic..."), no non-AWS comparisons, and nothing you cannot explain in an interview.
-  4. **Plain language.** Explain each problem so a reader who has never seen the error understands what you were trying to do and why it failed. Mask account and repository ID numbers as `xxxxxxx`.
+  4. **Link for learners.** On first mention, link each AWS service, feature or concept (Amazon S3, Origin Access Control, the IAM role's trust policy...) to its official AWS or GitHub documentation page, opening in a new tab with `rel="noopener"`. Check that each URL returns 200 first. Link, do not explain at length.
+  5. **Plain language.** Explain each problem so a reader who has never seen the error understands what you were trying to do and why it failed. Mask account and repository ID numbers as `xxxxxxx`.
 - **Brevity:** no prose block over ~100 words when a table or bullets would do.
 - **Placeholders:** no `TODO:` or "Placeholder" text on a published page. A deliberate "coming soon" image slot is allowed. `/review` enforces this; `/project <slug>` helps fill the sections.
