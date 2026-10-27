@@ -10,6 +10,8 @@ Light process for a solo static site. Never skip `/review`, never commit to `mai
 6. Merge the PR on GitHub, delete the branch.
 
 ## Branch names
+Create the branch in the main project folder with `git switch -c <name>`, so the editor switches to it and shows the work. Do not use separate `git worktree` folders.
+
 `<type>/<short-description>` — lowercase, hyphens. Types: `feat` `fix` `docs` `refactor` `chore`.
 
 ## Commit messages
