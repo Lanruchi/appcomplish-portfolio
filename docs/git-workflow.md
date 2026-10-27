@@ -16,7 +16,7 @@ Create the branch in the main project folder with `git switch -c <name>`, so the
 
 ## Commit messages
 `<type>(<scope>): <summary>` — lowercase, imperative, no period, ≤72 chars.
-Examples: `feat(projects): add s3 static website case study` · `fix(resume): correct pdf link`
+Examples: `feat(projects): add s3 static website case study` · `fix(resume): correct linkedin link`
 
 ## Review gate (no exceptions)
 - `/review` must be run **with the Skill tool, on the exact changes being committed**, and its output shown to the user. Summaries from memory do not count.
