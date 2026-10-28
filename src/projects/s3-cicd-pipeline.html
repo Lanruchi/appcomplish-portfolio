@@ -55,11 +55,10 @@
       <div class="callout">
         <div class="callout-label">Business Requirement</div>
         <p>
-          I update this portfolio often while I learn, and uploading files by hand in the AWS console
-          is slow, easy to forget and leaves no record. Every approved change must go live
-          automatically (CI/CD, short for continuous integration and continuous delivery), with no AWS
-          keys stored where they could leak, a preview before anything changes, and access limited to
-          one bucket.
+          Deploy this static website to Amazon S3 automatically with GitHub Actions on every approved
+          change (CI/CD, short for continuous integration and continuous delivery). It must use no stored
+          AWS keys, show a preview before anything changes, limit access to one bucket and clear the
+          CloudFront cache so changes show.
         </p>
         <p><strong>How would you deploy a static website like this?</strong></p>
       </div>
@@ -110,6 +109,24 @@
       </div>
       <p class="diagram-caption">Figure 1 — The five steps of a deploy. The site is only files, so one copy command is the whole deploy.</p>
       <p><strong>Proof:</strong> the dry run (a practice run that only lists changes) listed 10 uploads and 1 delete (an old sample page). After the real run, the main pages and the stylesheet returned 200 and the deleted page returned 404.</p>
+
+      <details class="services">
+        <summary>Services and tools in this pipeline and what each does</summary>
+        <div class="table-wrap">
+          <table class="cost-table">
+            <thead><tr><th>Service or tool</th><th>Purpose here</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://docs.github.com/en/actions" target="_blank" rel="noopener">GitHub Actions</a></td><td>Runs the deploy workflow when a change is merged to <code>main</code>.</td></tr>
+              <tr><td><a href="https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments" target="_blank" rel="noopener">GitHub Environments</a></td><td>Holds the role's Amazon Resource Name (ARN) as a secret, plus the bucket, region and distribution variables for the <code>production</code> environment.</td></tr>
+              <tr><td><a href="https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws" target="_blank" rel="noopener">OpenID Connect (OIDC)</a></td><td>Lets GitHub Actions get short-lived AWS credentials, so no access keys are stored.</td></tr>
+              <tr><td><a href="https://aws.amazon.com/iam/" target="_blank" rel="noopener">AWS Identity and Access Management (IAM)</a></td><td>The role GitHub assumes. Its trust policy says who may assume it, and its inline policies limit it to one bucket and one cache-clearing action.</td></tr>
+              <tr><td><a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">Amazon S3</a></td><td>The bucket that <code>aws s3 sync</code> updates with the site files.</td></tr>
+              <tr><td><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Invalidation.html" target="_blank" rel="noopener">Amazon CloudFront</a></td><td>Its cache is cleared after each deploy so visitors see the new files.</td></tr>
+              <tr><td><a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html" target="_blank" rel="noopener">AWS CloudTrail</a></td><td>Used to read the identity AWS actually saw when the role assumption failed (Problem 1).</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
 
       <!-- 4. Problems -->
       <h2 id="problems">Problems I Hit and How I Fixed Them</h2>
