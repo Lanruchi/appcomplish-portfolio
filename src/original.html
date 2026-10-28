@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <title>Nurudeen Adeniyi — Cloud Engineering Portfolio</title>
+  <meta name="description" content="Cloud engineering portfolio documenting my transition from senior .NET software engineering into AWS and DevOps. Real projects, real decisions, real tradeoffs." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Nurudeen Adeniyi" />
+  <meta property="og:title" content="Nurudeen Adeniyi — Transitioning to Cloud Engineering &amp; DevOps" />
+  <meta property="og:description" content="Senior software engineer with 18+ years in .NET, transitioning into cloud engineering and DevOps on AWS. Real projects, decisions and tradeoffs." />
+  <meta name="twitter:card" content="summary" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Nurudeen <span>Adeniyi</span></a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-label="Toggle menu">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="resume.html">Resume &amp; Certs</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <img class="hero-avatar" src="assets/images/profile/nurudeen_avatar.png" alt="Nurudeen Adeniyi" width="96" height="96" />
+      <p class="hero-label">Senior Software Engineer · Transitioning to Cloud Engineering &amp; DevOps</p>
+      <h1>Nurudeen Adeniyi</h1>
+      <p class="hero-bio">
+        I'm a senior software engineer with 18+ years of experience designing and running
+        distributed backends in .NET, and I'm transitioning into cloud engineering and DevOps
+        on AWS. This site documents what I'm learning through hands-on cloud and DevOps projects:
+        the decisions and tradeoffs behind each design, the problems I hit, and the core concepts
+        I'm studying: availability, redundancy, failover, scalability, security, observability,
+        CI/CD, cost and AI fundamentals.
+      </p>
+      <p class="hero-open"><strong>Open to:</strong> cloud engineering, DevOps and platform roles.</p>
+      <ul class="hero-proof">
+        <li>This site deploys itself: <a href="projects/s3-cicd-pipeline.html">GitHub Actions to Amazon S3 with no stored AWS keys</a></li>
+      </ul>
+      <div class="hero-actions">
+        <a class="resume-cta" href="https://www.linkedin.com/in/nurudeen-adeniyi-06249b9" target="_blank" rel="noopener">Message me on LinkedIn</a>
+        <a class="resume-cta resume-cta--ghost" href="https://github.com/nuru-adeniyi" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="tag-row hero-creds">
+        <span class="tag">AWS Solutions Architect – Associate (earned 2022, recertifying)</span>
+        <span class="tag">Microsoft MCAD</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AWS & Cloud Engineering ─────────────────────── -->
+  <section class="page page--alt">
+    <div class="container">
+
+      <div class="section-header">
+        <div class="section-header-left">
+          <span class="section-category-label">AWS &amp; Cloud Engineering</span>
+          <h2>Cloud Projects</h2>
+        </div>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- S3 Static Website -->
+        <div class="card">
+          <span class="card-status card-status--built">Built</span>
+          <h3>S3 Static Website Hosting</h3>
+          <p>
+            Deployed a static site to Amazon S3 with custom domain via Route 53.
+            Live on HTTPS via CloudFront; bucket private.
+          </p>
+          <div class="tag-row">
+            <span class="tag">AWS</span>
+            <span class="tag">S3</span>
+            <span class="tag">Route 53</span>
+            <span class="tag">CloudFront</span>
+          </div>
+          <a class="card-link" href="projects/s3-static-website.html">Read case study →</a>
+        </div>
+
+      </div><!-- /card-grid -->
+
+    </div>
+  </section>
+
+  <!-- ── DevOps & Automation ────────────────── -->
+  <section class="page">
+    <div class="container">
+
+      <div class="section-header">
+        <div class="section-header-left">
+          <span class="section-category-label">DevOps &amp; Automation</span>
+          <h2>DevOps Projects</h2>
+        </div>
+      </div>
+
+      <div class="card-grid">
+
+        <div class="card">
+          <span class="card-status card-status--built">Built</span>
+          <h3>CI/CD Pipelines</h3>
+          <p>
+            GitHub Actions workflows across multiple projects — automated
+            deploys to AWS ECS (containerized app), S3 sync on push,
+            and per-repo pipelines that run on every commit. Built and iterated
+            on over two years across personal and side projects.
+          </p>
+          <div class="tag-row">
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">CI/CD</span>
+            <span class="tag">AWS ECS</span>
+            <span class="tag">Docker</span>
+            <span class="tag">S3</span>
+          </div>
+          <a class="card-link" href="projects/s3-cicd-pipeline.html">Read case study →</a>
+        </div>
+
+      </div><!-- /card-grid -->
+
+    </div>
+  </section>
+
+  <!-- ── AI & Automation ─────────────────────────────────── -->
+  <section class="page page--alt">
+    <div class="container">
+
+      <div class="section-header">
+        <div class="section-header-left">
+          <span class="section-category-label">AI &amp; Automation</span>
+          <h2>AI Projects</h2>
+        </div>
+      </div>
+
+      <div class="card-grid">
+
+        <div class="card">
+          <span class="card-status card-status--built">Built</span>
+          <h3>OptiBizIQ — POS Analytics Pipeline</h3>
+          <p>
+            <span style="font-style:italic;color:var(--text-muted);font-size:0.85rem;">&#128218; Tutorial-guided — followed DataCamp and prompting tutorials to learn Python, OpenAI API, and RAG basics.</span><br><br>
+            Pulls Square POS data, generates daily business summaries with OpenAI,
+            and delivers them via Telegram. The goal was hands-on exposure to AI
+            tooling, not a production system.
+          </p>
+          <div class="tag-row">
+            <span class="tag">Python</span>
+            <span class="tag">OpenAI</span>
+            <span class="tag">Square API</span>
+            <span class="tag">Telegram</span>
+          </div>
+        </div>
+
+      </div><!-- /card-grid -->
+
+      <div class="section-more">
+        <a class="resume-cta resume-cta--ghost" href="projects.html">See all projects →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <p>
+      Built and documented by Nurudeen Adeniyi ·
+      <a href="https://github.com/nuru-adeniyi" target="_blank" rel="noopener">GitHub</a> ·
+      <a href="https://www.linkedin.com/in/nurudeen-adeniyi-06249b9" target="_blank" rel="noopener">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
