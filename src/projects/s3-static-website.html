@@ -55,9 +55,9 @@
       <div class="callout">
         <div class="callout-label">Business Requirement</div>
         <p>
-          I'm moving into cloud engineering and need a public portfolio that recruiters can open on any
-          device. It must run on my own domain over HTTPS, have no servers to patch, keep its storage
-          bucket private and cost very little.
+          Build a static website for a public portfolio, stored in Amazon S3 and delivered by Amazon
+          CloudFront. It must open on any device, run on my own domain over HTTPS, need no servers to
+          patch, keep its S3 bucket private and cost very little.
         </p>
         <p><strong>How would you host a portfolio website like this?</strong></p>
       </div>
@@ -71,12 +71,11 @@
       </dl>
 
       <!-- 3. Figures -->
-      <!-- Architecture image: when drawn, save it as src/assets/images/projects/s3-static-website/architecture.png
-           and replace the div below with <img src="../assets/images/projects/s3-static-website/architecture.png" alt="..." /> -->
       <div class="diagram-box">
-        <div class="diagram-slot" role="img" aria-label="AWS architecture diagram, not drawn yet">AWS architecture diagram: coming soon</div>
+        <img src="../assets/images/projects/s3-static-website/architecture.gif" width="1152" height="648"
+             alt="Animated AWS architecture diagram. Step 1: the visitor's browser asks Amazon Route 53 (DNS) for the domain. Step 2: the browser sends an HTTPS request to Amazon CloudFront, which uses an AWS Certificate Manager (ACM) certificate for the HTTPS handshake. Step 3: CloudFront fetches the page from the private Amazon S3 bucket through Origin Access Control (OAC) and returns it to the browser." />
       </div>
-      <p class="diagram-caption">Figure 1 — The architecture: Amazon Route 53, Amazon CloudFront, AWS Certificate Manager (ACM) and a private Amazon S3 bucket.</p>
+      <p class="diagram-caption">Figure 1 — The request path, animated: Amazon Route 53 finds the site, Amazon CloudFront serves it over HTTPS with an AWS Certificate Manager (ACM) certificate, and only CloudFront can read the private Amazon S3 bucket, through Origin Access Control (OAC).</p>
 
       <div class="diagram-box">
         <svg viewBox="0 0 760 440" role="img" aria-label="Phase 1: a visitor's browser requests the public S3 website URL of an Amazon S3 bucket over HTTP. Phase 2: the browser asks Amazon Route 53 (DNS) for appcomplish.click and is sent to the S3 website endpoint over HTTP. Phase 3: the browser goes through Route 53 to Amazon CloudFront, which serves HTTPS using an AWS Certificate Manager (ACM) certificate, while the S3 bucket is still public. Phase 4, live: the same path, but the bucket is private and readable only by CloudFront through Origin Access Control (OAC)." style="width:100%;height:auto;">
@@ -153,6 +152,22 @@
       <p class="diagram-caption">Figure 2 — Four stages, in the order I built them. I opened the site after each one, so a failure pointed to the last change. The site is only files, so it needs no server. OAC is <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html" target="_blank" rel="noopener">Origin Access Control</a>.</p>
       <p><strong>Proof:</strong> <code>https://appcomplish.click</code> returns HTTP 200 through CloudFront, and so does <code>https://www.appcomplish.click</code>. The HTTP address redirects to HTTPS.</p>
 
+      <details class="services">
+        <summary>AWS services in this design and what each does</summary>
+        <div class="table-wrap">
+          <table class="cost-table">
+            <thead><tr><th>Service</th><th>Purpose here</th></tr></thead>
+            <tbody>
+              <tr><td><a href="https://aws.amazon.com/route53/" target="_blank" rel="noopener">Amazon Route 53</a></td><td>DNS: sends <code>appcomplish.click</code> and <code>www</code> to CloudFront.</td></tr>
+              <tr><td><a href="https://aws.amazon.com/cloudfront/" target="_blank" rel="noopener">Amazon CloudFront</a></td><td>Global content delivery: serves the site over HTTPS from edge locations and caches the files.</td></tr>
+              <tr><td><a href="https://aws.amazon.com/certificate-manager/" target="_blank" rel="noopener">AWS Certificate Manager (ACM)</a></td><td>The certificate for the HTTPS handshake (the padlock), attached to the CloudFront distribution. CloudFront requires the certificate to be requested in <code>us-east-1</code> (N. Virginia), even though CloudFront is global.</td></tr>
+              <tr><td><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html" target="_blank" rel="noopener">Origin Access Control (OAC)</a></td><td>A CloudFront feature, not part of ACM. It controls how CloudFront signs requests to its origin, here the S3 bucket, so only this distribution can read it.</td></tr>
+              <tr><td><a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">Amazon S3</a></td><td>Stores the site files in a private bucket with Block Public Access on.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
       <!-- 4. Locking the bucket to CloudFront -->
       <h2 id="problems">Problems I Hit and How I Fixed Them</h2>
       <div class="callout callout--problem">
@@ -220,7 +235,7 @@
             <tr><td>Scalability &amp; performance</td><td>CloudFront caches files at the edge. Latency not measured yet.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Availability &amp; fault tolerance</td><td>No servers to fail, and S3 Standard stores objects across multiple Availability Zones per <a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">AWS</a>. One bucket and DNS remain single points.</td><td><span class="pill pill--planned">Partly addressed</span></td></tr>
             <tr><td>Data &amp; consistency</td><td>n/a — static files only; no database or shared state.</td><td><span class="pill pill--na">n/a</span></td></tr>
-            <tr><td>Security</td><td>HTTPS through ACM (<a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cnames-and-https-requirements.html" target="_blank" rel="noopener">the certificate must be created in <code>us-east-1</code></a>); private bucket via OAC. See <a href="#problems">above</a>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
+            <tr><td>Security</td><td>HTTPS through ACM (<a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cnames-and-https-requirements.html" target="_blank" rel="noopener">the certificate must be created in <code>us-east-1</code></a>); private bucket via OAC. ACM handles the HTTPS handshake with the visitor. OAC is separate: it controls how CloudFront reaches its origin, here the S3 bucket, by signing each request with AWS Signature Version 4, and the bucket policy trusts only this distribution, so direct S3 URLs are denied. See <a href="#problems">above</a>.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr><td>Observability</td><td>Access logs and alarms are not set up yet.</td><td><span class="pill pill--na">Not addressed yet</span></td></tr>
             <tr><td>Deployment &amp; DevOps</td><td>GitHub Actions deploys on merge (<a href="s3-cicd-pipeline.html">CI/CD case study</a>). Next time I would start with Terraform.</td><td><span class="pill pill--decided">Addressed</span></td></tr>
             <tr class="is-best"><td>Cost &amp; trade-offs</td><td>Under $1 a month in total (estimate): S3, Route 53, and CloudFront's Free plan, which costs $0 a month. Rejected: EC2 or Lightsail, about $5–12 plus patching; AWS Amplify Hosting, which hides the AWS pieces I want to learn; a separate AWS Web Application Firewall (WAF), which adds fees a static site does not need. Sources:

@@ -61,10 +61,10 @@
   <article class="article-body">
     <div class="container--narrow">
 
-      <!-- 1. BUSINESS REQUIREMENT: the need, why now and the requirements in one short paragraph, then the design question. No bullets. -->
+      <!-- 1. BUSINESS REQUIREMENT: start straight with the requirement ("Build a ... on ... that must ..."), no backstory, one short paragraph, then the design question. No bullets. -->
       <div class="callout">
         <div class="callout-label">Business Requirement</div>
-        <p>TODO: who needs what and why now, plus the requirements it must meet (own domain, no stored keys, low cost...).</p>
+        <p>TODO: "Build a ... using ... It must ..." (own domain, no stored keys, low cost...).</p>
         <p><strong>TODO: the design question, e.g. "How would you host a portfolio website like this?"</strong></p>
       </div>
 
@@ -85,6 +85,20 @@
       </div>
       <p class="diagram-caption">TODO: Figure 1 — what the diagram shows and why this design fits. State only what was built.</p>
       <p><strong>Proof:</strong> TODO — a command, test or result that shows it works.</p>
+
+      <!-- Services list: collapsible, one row per AWS service (and GitHub tool on CI/CD pages) that was actually used, with what it does here.
+           Link each name to its official page (first mention rule). Keep each purpose to one line. -->
+      <details class="services">
+        <summary>AWS services in this design and what each does</summary>
+        <div class="table-wrap">
+          <table class="cost-table">
+            <thead><tr><th>Service</th><th>Purpose here</th></tr></thead>
+            <tbody>
+              <tr><td><a href="TODO" target="_blank" rel="noopener">TODO service</a></td><td>TODO what it does here.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
 
       <!-- 4. PROBLEMS: real problems only. For each one a red callout (Trying to, What happened, Why) then a green Fix callout with numbered
            steps that name where to click (Console → Service → Page → Button). Mask ID numbers as xxxxxxx. Delete this whole section if nothing went wrong; do not invent. -->

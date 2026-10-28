@@ -341,7 +341,10 @@ a:hover { text-decoration: underline; }
   text-align: center;
   margin: 1.5rem 0;
 }
+.diagram-box { position: relative; }
 .diagram-box img {
+  height: auto;
+  cursor: zoom-in;
   border-radius: var(--radius);
   margin: 0 auto;
 }
@@ -656,3 +659,29 @@ footer a:hover { color: var(--accent); }
 .hero-creds { margin-top: 1.25rem; }
 .hero-creds .tag { white-space: normal; }
 .section-more { margin-top: 2rem; text-align: center; }
+
+/* Collapsible list of AWS services on case studies */
+.services { margin: 1rem 0; }
+.services summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+.services[open] summary { margin-bottom: .75rem; }
+
+/* Full-screen view of a diagram (opened from the expand button or a double-click) */
+.zoom-btn {
+  position: absolute; top: .75rem; right: .75rem;
+  display: flex; align-items: center; justify-content: center;
+  width: 2.25rem; height: 2.25rem;
+  background: var(--bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  cursor: pointer;
+}
+.zoom-btn:hover, .zoom-btn:focus-visible { color: var(--accent); border-color: var(--accent); }
+.lightbox {
+  width: 100vw; height: 100vh; max-width: none; max-height: none;
+  margin: 0; padding: 0; border: 0;
+  background: var(--bg); cursor: zoom-out;
+}
+.lightbox img { width: 100%; height: 100%; object-fit: contain; border-radius: 0; margin: 0; cursor: zoom-out; }
+.lightbox-hint {
+  position: fixed; bottom: .75rem; left: 50%; transform: translateX(-50%);
+  font-size: .8rem; color: var(--text-muted);
+}
