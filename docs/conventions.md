@@ -13,6 +13,7 @@ appcomplish-portfolio/
 │   │   ├── branch.md                  # /branch    create feature branch
 │   │   ├── changes.md                 # /changes   show diff, stage nothing
 │   │   ├── concepts.md                # /concepts  fill Design Considerations from the cheat sheet
+│   │   ├── diagram.md                 # /diagram   guide the draw.io architecture diagram, fill the Figure
 │   │   ├── project.md                 # /project  interview-driven case study (5 W's + How + Cost)
 │   │   ├── review.md                  # /review    code review checklist
 │   │   ├── commit.md                  # /commit    README check + approved commit
@@ -137,7 +138,7 @@ Every `src/projects/<slug>.html` follows `docs/templates/project-case-study.html
 |---|---|---|
 | 1 | Business Requirement | The need, why now and the requirements (own domain, no stored keys, low cost...) in one short paragraph, then the design question |
 | 2 | At a glance | Key decision, Stack (with region), Monthly cost (estimate), Status. A Source row (GitHub link) is allowed on CI/CD pages |
-| 3 | Figure | One diagram and a short caption, then an optional Proof line (a result that shows it works). Pages that will get an architecture image keep a "coming soon" slot until it exists; CI/CD pages have none |
+| 3 | Figure | One diagram and a short caption, then an optional Proof line (a result that shows it works). Pages that will get an architecture image keep a "coming soon" slot until it exists; CI/CD pages have none. Run `/diagram <slug>` for the layout standard |
 | 4 | Problems I Hit and How I Fixed Them | Real problems only. Each is a red callout (Trying to, What happened, Why) followed by a green Fix callout with numbered steps that name where to click. Omit the section when nothing went wrong; never invent a problem. An option table is allowed for a decision that mattered |
 | 5 | Design Considerations | The 8 Core categories from `docs/system-design-concepts.md`, columns Category, Decision, Status. Cost lives in its row: the estimate, the rejected AWS options and the pricing links |
 
